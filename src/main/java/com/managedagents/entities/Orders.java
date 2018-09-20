@@ -8,6 +8,7 @@ package com.managedagents.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -42,11 +43,16 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries(
         {
-            @NamedQuery(name = "Orders.findAll", query = "SELECT o FROM Orders o"),
-            @NamedQuery(name = "Orders.findByUser", query = "SELECT o FROM Orders o WHERE o.user = :user"),
-            @NamedQuery(name = "Orders.findByOrderId", query = "SELECT o FROM Orders o WHERE o.orderId = :orderId"),
-            @NamedQuery(name = "Orders.findByOrderDate", query = "SELECT o FROM Orders o WHERE o.orderDate = :orderDate"),
-            @NamedQuery(name = "Orders.findByModificationDate", query = "SELECT o FROM Orders o WHERE o.modificationDate = :modificationDate"),
+            @NamedQuery(name = "Orders.findAll", query = "SELECT o FROM Orders o")
+            ,
+            @NamedQuery(name = "Orders.findByUser", query = "SELECT o FROM Orders o WHERE o.user = :user")
+            ,
+            @NamedQuery(name = "Orders.findByOrderId", query = "SELECT o FROM Orders o WHERE o.orderId = :orderId")
+            ,
+            @NamedQuery(name = "Orders.findByOrderDate", query = "SELECT o FROM Orders o WHERE o.orderDate = :orderDate")
+            ,
+            @NamedQuery(name = "Orders.findByModificationDate", query = "SELECT o FROM Orders o WHERE o.modificationDate = :modificationDate")
+            ,
             @NamedQuery(name = "Orders.findByStatusType", query = "SELECT o FROM Orders o WHERE o.statusType = :statusType")
         })
 public class Orders implements Serializable
@@ -105,6 +111,7 @@ public class Orders implements Serializable
         this.statusType = "NEW";
         this.editingUser = editingUser;
         this.user = editingUser;
+        this.orderItemsList = new ArrayList<>();
     }
 
     public Integer getOrderId()
