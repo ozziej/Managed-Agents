@@ -1,0 +1,22 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>My Details</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>
+    <h:body>
+        <ui:composition template="layout.xhtml">
+            <ui:define name="content">
+                <h:form id="myDetailsForm">
+                    <p:panel header="Basic Details">
+                        <h:outputLabel value="Name :"/><h:outputLabel value="#{loginBean.currentUser.firstName} #{loginBean.currentUser.surname}"/>
+                    </p:panel>
+                </h:form>
+                <!--<ui:include src="edituserdialog.xhtml"/>//-->
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

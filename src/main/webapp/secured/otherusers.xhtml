@@ -1,0 +1,37 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>My Details</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>
+    <h:body>
+        <ui:composition template="layout.xhtml">
+            <ui:define name="content">
+                <h:form id="userListForm">
+                    <p:dataTable style="margin-top:8px;font-size:14px;" id="userDataTable" var="userData" value="#{usersController.users}" rows="10"
+                                 paginator="true" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                                 rowsPerPageTemplate="5,10,15" selection="#{usersController.selectedUser}" selectionMode="single" widgetVar="userTable" lazy="true"
+                                 rowKey="#{userData.userId}" paginatorPosition="top">
+                        <p:ajax event="rowSelect" listener="#{usersController.onRowSelect}" update=":userListForm:editSelectedUser"/>
+                        <p:ajax event="filter" listener="#{usersController.onFilterEvent}" update=":userListForm:editSelectedUser"/>
+                        <p:ajax event="page" listener="#{usersController.onPaginationEvent}" update=":userListForm:editSelectedUser"/>
+                        <p:column headerText="User Name" sortBy="#{userData.surname}" filterBy="#{userData.surname}" filterMatchMode="contains">
+                            <h:outputText value="#{userData.firstName} #{userData.surname}"/>
+                        </p:column>
+                        <p:column headerText="Email Address" filterBy="#{userData.emailAddress}" filterMatchMode="contains">
+                            <h:outputText value="#{userData.emailAddress}"/>
+                        </p:column>
+                    </p:dataTable>
+                    <p:commandButton id="editSelectedUser" value="Edit Selected User" disabled="#{usersController.selectedUser == null}" oncomplete="PF('usersEditDialog').show()"
+                                     update=":usersEditDialog"/>
+                    <p:commandButton id="newUser" value="Create New User" actionListener="#{usersController.createNewUser}" oncomplete="PF('usersEditDialog').show()"
+                                     update=":usersEditDialog"/>
+                </h:form>
+                <ui:include src="edituserdialog.xhtml"/>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
