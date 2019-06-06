@@ -5,7 +5,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
 
-    <f:view contentType="text/html">
+    <f:view>
         <h:head>
             <f:facet name="first">
                 <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
@@ -22,20 +22,22 @@
                 <p:menubar>
                     <p:menuitem value="User Details" url="mydetails.xhtml"/>
                     <p:menuitem value="Other Users" url="otherusers.xhtml"/>
+                    <p:menuitem value="Appointments" url="appointments.xhtml"/>
+                    <p:menuitem value="Companies" url="companies.xhtml"/>
                     <p:menuitem value="Orders" url="orders.xhtml"/>
                     <f:facet name="options">
                         <p:outputLabel value="#{loginBean.currentUser.emailAddress}"/>
-                        <p:commandButton value="Logout" icon="ui-icon-exitlink" action="#{loginBean.logoutUser()}" />
+                        <p:commandButton value="Logout" icon="pi pi-sign-out" action="#{loginBean.logoutUser()}" />
                     </f:facet>
                 </p:menubar>
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" style="font-size: 12px;">
                 <p:panelGrid styleClass="noBorders" style="width: 100%;">
                     <p:row>
                         <p:column style="text-align: left;">
-                            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
                         </p:column>
                         <p:column style="text-align: right;">
-                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
                         </p:column>
                     </p:row>
                 </p:panelGrid>

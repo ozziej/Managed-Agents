@@ -1,0 +1,1 @@
+INSERT INTO `users` VALUES (1,'wtO2QAKQGB/HkPaGeXIYh1X1+5s=','JQ+8pJyY0a4=','Dr.','James','Ostrowick','None','Male','james@ostrowick.co.za','South Africa','None','None','011','082','None','1974-10-23 00:00:00','2016-10-05 10:07:56','ENABLED');

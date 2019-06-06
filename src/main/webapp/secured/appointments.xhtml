@@ -4,7 +4,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Order Details</title>
+        <title>Appointment Details</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </h:head>
     <h:body>
@@ -20,12 +20,6 @@
                         <p:ajax event="page" listener="#{ordersController.onPaginationEvent}" update=":orderListForm:editOrderButton"/>
                         <p:column headerText="Order Id" style="text-align: center;" sortBy="#{orderData.orderId}" filterBy="#{orderData.orderId}" filterMatchMode="exact">
                             <h:outputText value="#{orderData.orderId}"/>
-                        </p:column>
-                        <p:column headerText="Created By" style="text-align: center;" sortBy="#{orderData.user}">
-                            <h:outputText value="#{orderData.user.firstName} #{orderData.user.surname}"/>
-                        </p:column>
-                        <p:column headerText="Company Name" style="text-align: center;" sortBy="#{orderData.company}">
-                            <h:outputText value="#{orderData.company.companyName}"/>
                         </p:column>
                         <p:column headerText="Order Date" sortBy="#{orderData.orderDate}">
                             <h:outputText value="#{orderData.orderDate}"/>

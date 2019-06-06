@@ -7,8 +7,8 @@ package com.managedagents.entities;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -36,28 +36,22 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "users")
 @XmlRootElement
 @NamedQueries(
-{
-    @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u"),
-    @NamedQuery(name = "Users.findByUserId", query = "SELECT u FROM Users u WHERE u.userId = :userId"),
-    @NamedQuery(name = "Users.findByUserPass", query = "SELECT u FROM Users u WHERE u.userPass = :userPass"),
-    @NamedQuery(name = "Users.findByUserSalt", query = "SELECT u FROM Users u WHERE u.userSalt = :userSalt"),
-    @NamedQuery(name = "Users.findByTitle", query = "SELECT u FROM Users u WHERE u.title = :title"),
-    @NamedQuery(name = "Users.findByFirstName", query = "SELECT u FROM Users u WHERE u.firstName = :firstName"),
-    @NamedQuery(name = "Users.findBySurname", query = "SELECT u FROM Users u WHERE u.surname = :surname"),
-    @NamedQuery(name = "Users.findByOtherName", query = "SELECT u FROM Users u WHERE u.otherName = :otherName"),
-    @NamedQuery(name = "Users.findByGender", query = "SELECT u FROM Users u WHERE u.gender = :gender"),
-    @NamedQuery(name = "Users.findByEmailAddress", query = "SELECT u FROM Users u WHERE u.emailAddress = :emailAddress"),
-    @NamedQuery(name = "Users.findByCountry", query = "SELECT u FROM Users u WHERE u.country = :country"),
-    @NamedQuery(name = "Users.findByCity", query = "SELECT u FROM Users u WHERE u.city = :city"),
-    @NamedQuery(name = "Users.findBySuburb", query = "SELECT u FROM Users u WHERE u.suburb = :suburb"),
-    @NamedQuery(name = "Users.findByPhoneNumber", query = "SELECT u FROM Users u WHERE u.phoneNumber = :phoneNumber"),
-    @NamedQuery(name = "Users.findByCellNumber", query = "SELECT u FROM Users u WHERE u.cellNumber = :cellNumber"),
-    @NamedQuery(name = "Users.findByDateOfBirth", query = "SELECT u FROM Users u WHERE u.dateOfBirth = :dateOfBirth"),
-    @NamedQuery(name = "Users.findByFirstRegistered", query = "SELECT u FROM Users u WHERE u.firstRegistered = :firstRegistered"),
-    @NamedQuery(name = "Users.findByUserStatus", query = "SELECT u FROM Users u WHERE u.userStatus = :userStatus")
-})
-public class Users implements Serializable
-{
+        {
+            @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u"),
+            @NamedQuery(name = "Users.findByUserId", query = "SELECT u FROM Users u WHERE u.userId = :userId"),
+            @NamedQuery(name = "Users.findBySurname", query = "SELECT u FROM Users u WHERE u.surname = :surname"),
+            @NamedQuery(name = "Users.findByGender", query = "SELECT u FROM Users u WHERE u.gender = :gender"),
+            @NamedQuery(name = "Users.findByEmailAddress", query = "SELECT u FROM Users u WHERE u.emailAddress = :emailAddress"),
+            @NamedQuery(name = "Users.findByCountry", query = "SELECT u FROM Users u WHERE u.country = :country"),
+            @NamedQuery(name = "Users.findByCity", query = "SELECT u FROM Users u WHERE u.city = :city"),
+            @NamedQuery(name = "Users.findByPhoneNumber", query = "SELECT u FROM Users u WHERE u.phoneNumber = :phoneNumber"),
+            @NamedQuery(name = "Users.findByCellNumber", query = "SELECT u FROM Users u WHERE u.cellNumber = :cellNumber"),
+            @NamedQuery(name = "Users.findByUserStatus", query = "SELECT u FROM Users u WHERE u.userStatus = :userStatus")
+        })
+public class Users implements Serializable {
+
+    @OneToMany(mappedBy = "user")
+    private Collection<Appointments> appointmentsCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -152,15 +146,16 @@ public class Users implements Serializable
     @Column(name = "user_status")
     private String userStatus;
     @OneToMany(mappedBy = "editingUser")
-    private List<Orders> ordersList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<CompanyUsers> companyUsersList;
+    private Collection<Orders> ordersList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
+    private Collection<CompanyUsers> companyUsersList;
     @OneToMany(mappedBy = "userId")
-    private List<OrderItems> orderItemsList;
+    private Collection<OrderItems> orderItemsList;
 
-    public Users()
-    {
+    public Users() {
         this.userId = 0;
+        this.userPass = "";
+        this.userSalt = "";
         this.title = "Mr.";
         this.firstName = "First Name";
         this.surname = "Surname";
@@ -178,13 +173,7 @@ public class Users implements Serializable
         this.dateOfBirth = Calendar.getInstance().getTime();
     }
 
-    public Users(Integer userId)
-    {
-        this.userId = userId;
-    }
-
-    public Users(Integer userId, String userPass, String userSalt, String title, String firstName, String surname, String otherName, String gender, String emailAddress, String country, String city, String suburb, String phoneNumber, String cellNumber, String otherDetails, Date dateOfBirth, Date firstRegistered, String userStatus)
-    {
+    public Users(Integer userId, String userPass, String userSalt, String title, String firstName, String surname, String otherName, String gender, String emailAddress, String country, String city, String suburb, String phoneNumber, String cellNumber, String otherDetails, Date dateOfBirth, Date firstRegistered, String userStatus) {
         this.userId = userId;
         this.userPass = userPass;
         this.userSalt = userSalt;
@@ -205,247 +194,205 @@ public class Users implements Serializable
         this.userStatus = userStatus;
     }
 
-    public Integer getUserId()
-    {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId)
-    {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
-    public String getUserPass()
-    {
+    public String getUserPass() {
         return userPass;
     }
 
-    public void setUserPass(String userPass)
-    {
+    public void setUserPass(String userPass) {
         this.userPass = userPass;
     }
 
-    public String getUserSalt()
-    {
+    public String getUserSalt() {
         return userSalt;
     }
 
-    public void setUserSalt(String userSalt)
-    {
+    public void setUserSalt(String userSalt) {
         this.userSalt = userSalt;
     }
 
-    public String getTitle()
-    {
+    public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title)
-    {
+    public void setTitle(String title) {
         this.title = title;
     }
 
-    public String getFirstName()
-    {
+    public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName)
-    {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public String getSurname()
-    {
+    public String getSurname() {
         return surname;
     }
 
-    public void setSurname(String surname)
-    {
+    public void setSurname(String surname) {
         this.surname = surname;
     }
 
-    public String getOtherName()
-    {
+    public String getOtherName() {
         return otherName;
     }
 
-    public void setOtherName(String otherName)
-    {
+    public void setOtherName(String otherName) {
         this.otherName = otherName;
     }
 
-    public String getGender()
-    {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(String gender)
-    {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
-    public String getEmailAddress()
-    {
+    public String getEmailAddress() {
         return emailAddress;
     }
 
-    public void setEmailAddress(String emailAddress)
-    {
+    public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
     }
 
-    public String getCountry()
-    {
+    public String getCountry() {
         return country;
     }
 
-    public void setCountry(String country)
-    {
+    public void setCountry(String country) {
         this.country = country;
     }
 
-    public String getCity()
-    {
+    public String getCity() {
         return city;
     }
 
-    public void setCity(String city)
-    {
+    public void setCity(String city) {
         this.city = city;
     }
 
-    public String getSuburb()
-    {
+    public String getSuburb() {
         return suburb;
     }
 
-    public void setSuburb(String suburb)
-    {
+    public void setSuburb(String suburb) {
         this.suburb = suburb;
     }
 
-    public String getPhoneNumber()
-    {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber)
-    {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getCellNumber()
-    {
+    public String getCellNumber() {
         return cellNumber;
     }
 
-    public void setCellNumber(String cellNumber)
-    {
+    public void setCellNumber(String cellNumber) {
         this.cellNumber = cellNumber;
     }
 
-    public String getOtherDetails()
-    {
+    public String getOtherDetails() {
         return otherDetails;
     }
 
-    public void setOtherDetails(String otherDetails)
-    {
+    public void setOtherDetails(String otherDetails) {
         this.otherDetails = otherDetails;
     }
 
-    public Date getDateOfBirth()
-    {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth)
-    {
+    public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public Date getFirstRegistered()
-    {
+    public Date getFirstRegistered() {
         return firstRegistered;
     }
 
-    public void setFirstRegistered(Date firstRegistered)
-    {
+    public void setFirstRegistered(Date firstRegistered) {
         this.firstRegistered = firstRegistered;
     }
 
-    public String getUserStatus()
-    {
+    public String getUserStatus() {
         return userStatus;
     }
 
-    public void setUserStatus(String userStatus)
-    {
+    public void setUserStatus(String userStatus) {
         this.userStatus = userStatus;
     }
 
     @XmlTransient
-    public List<Orders> getOrdersList()
-    {
+    public Collection<Orders> getOrdersList() {
         return ordersList;
     }
 
-    public void setOrdersList(List<Orders> ordersList)
-    {
+    public void setOrdersList(Collection<Orders> ordersList) {
         this.ordersList = ordersList;
     }
 
     @XmlTransient
-    public List<CompanyUsers> getCompanyUsersList()
-    {
+    public Collection<CompanyUsers> getCompanyUsersList() {
         return companyUsersList;
     }
 
-    public void setCompanyUsersList(List<CompanyUsers> companyUsersList)
-    {
+    public void setCompanyUsersList(Collection<CompanyUsers> companyUsersList) {
         this.companyUsersList = companyUsersList;
     }
 
     @XmlTransient
-    public List<OrderItems> getOrderItemsList()
-    {
+    public Collection<OrderItems> getOrderItemsList() {
         return orderItemsList;
     }
 
-    public void setOrderItemsList(List<OrderItems> orderItemsList)
-    {
+    public void setOrderItemsList(Collection<OrderItems> orderItemsList) {
         this.orderItemsList = orderItemsList;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int hash = 0;
         hash += (userId != null ? userId.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object)
-    {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Users))
-        {
+    public boolean equals(Object object) {
+        if (!(object instanceof Users)) {
             return false;
         }
         Users other = (Users) object;
-        if ((this.userId == null && other.userId != null) || (this.userId != null && !this.userId.equals(other.userId)))
-        {
-            return false;
-        }
-        return true;
+        return !((this.userId == null && other.userId != null) || (this.userId != null && !this.userId.equals(other.userId)));
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "com.managedagents.entities.Users[ userId=" + userId + " ]";
     }
-    
+
+    @XmlTransient
+    public Collection<Appointments> getAppointmentsCollection() {
+        return appointmentsCollection;
+    }
+
+    public void setAppointmentsCollection(Collection<Appointments> appointmentsCollection) {
+        this.appointmentsCollection = appointmentsCollection;
+    }
+
 }

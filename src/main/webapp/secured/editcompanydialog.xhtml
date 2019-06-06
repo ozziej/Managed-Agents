@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="companyEditDialog" widgetVar="companyEditDialog" modal="true" resizable="false" closable="false" style="font-size: 12px;">
+            <f:facet name="header">
+                Edit company Details
+            </f:facet>
+            <h:form id="companyEditForm">
+                <p:panelGrid columns="4" id="companyPanel" style="border:none;">
+                    <p:outputLabel value="Company Name"/>
+                    <p:inputText id="companyName" value="#{companiesController.selectedCompany.companyName}"/>
+                    <p:outputLabel value="Vat Number"/>
+                    <p:inputText id="vatNumber" value="#{companiesController.selectedCompany.vatNumber}"/>
+                    <p:outputLabel value="Phone Number"/>
+                    <p:inputText id="phoneNumber" value="#{companiesController.selectedCompany.phoneNumber}"/>
+                    <p:outputLabel value="Cell Number"/>
+                    <p:inputText id="cellNumber" value="#{companiesController.selectedCompany.cellNumber}"/>
+                    <p:outputLabel value="Latitude"/>
+                    <p:inputText id="locationLatitude" value="#{companiesController.selectedCompany.locationLatitude}"/>
+                    <p:outputLabel value="Longitude"/>
+                    <p:inputText id="locationLongitude" value="#{companiesController.selectedCompany.locationLongitude}"/>
+                    <p:outputLabel value="Physical Address"/>
+                    <p:inputTextarea rows="3" cols="20" id="physicalAddress" value="#{companiesController.selectedCompany.physicalAddress}"/>
+                    <p:outputLabel value="Postal Address"/>
+                    <p:inputTextarea rows="3" cols="20" id="postalAddress" value="#{companiesController.selectedCompany.postalAddress}"/>
+                </p:panelGrid>
+                <p:commandButton value="Save" action="#{companiesController.updateCompany}" oncomplete="handleSubmit(args,'companyEditDialog');"
+                                 update=":companyListForm:companyDataTable, :growl"/>
+                <p:commandButton value="Cancel" onclick="PF('companyEditDialog').hide();" immediate="true">
+                    <p:confirm header="Confirmation" message="Are you sure you wish to cancel all changes ?" icon="pi pi-exclamation-triangle" />
+                </p:commandButton>
+            </h:form>
+        </p:dialog>
+    </ui:composition>
+</html>

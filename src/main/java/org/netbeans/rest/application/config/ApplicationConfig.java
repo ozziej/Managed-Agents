@@ -32,6 +32,8 @@ public class ApplicationConfig extends Application
      */
     private void addRestResourceClasses(Set<Class<?>> resources)
     {
+        resources.add(com.managedagents.rest.AppointmentsREST.class);
+        resources.add(com.managedagents.rest.CompaniesREST.class);
         resources.add(com.managedagents.rest.OrdersREST.class);
         resources.add(com.managedagents.rest.ProductsREST.class);
         resources.add(com.managedagents.rest.UsersREST.class);

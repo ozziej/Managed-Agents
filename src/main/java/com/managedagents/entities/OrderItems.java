@@ -37,7 +37,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "OrderItems.findByItemId", query = "SELECT o FROM OrderItems o WHERE o.itemId = :itemId"),
     @NamedQuery(name = "OrderItems.findByItemDiscount", query = "SELECT o FROM OrderItems o WHERE o.itemDiscount = :itemDiscount"),
     @NamedQuery(name = "OrderItems.findByItemPrice", query = "SELECT o FROM OrderItems o WHERE o.itemPrice = :itemPrice"),
-    @NamedQuery(name = "OrderItems.findByItemQuantity", query = "SELECT o FROM OrderItems o WHERE o.itemQuantity = :itemQuantity")
+@NamedQuery(name = "OrderItems.findByItemQuantity", query = "SELECT o FROM OrderItems o WHERE o.itemQuantity = :itemQuantity")
 })
 public class OrderItems implements Serializable
 {
@@ -65,12 +65,11 @@ public class OrderItems implements Serializable
     @Basic(optional = false)
     @NotNull
     @Column(name = "item_quantity")
-    private int itemQuantity;
+    private double itemQuantity;
     @JsonBackReference
     @JoinColumn(name = "order_id", referencedColumnName = "order_id")
     @ManyToOne(optional = false)
     private Orders order;
-    @JsonIgnore
     @JoinColumn(name = "product_id", referencedColumnName = "product_id")
     @ManyToOne(optional = false)
     private Products product;
@@ -79,132 +78,102 @@ public class OrderItems implements Serializable
     @ManyToOne
     private Users userId;
 
-    public OrderItems()
-    {
+    public OrderItems() {
+        this(0, "None", 0.0, 0.0, 0, null);
     }
 
-    public OrderItems(Integer itemId)
-    {
-        this.itemId = itemId;
-    }
-
-    public OrderItems(Integer itemId, String itemDescription, double itemDiscount, double itemPrice, int itemQuantity)
-    {
+    public OrderItems(Integer itemId, String itemDescription, double itemDiscount, double itemPrice, double itemQuantity, Products product) {
         this.itemId = itemId;
         this.itemDescription = itemDescription;
         this.itemDiscount = itemDiscount;
         this.itemPrice = itemPrice;
         this.itemQuantity = itemQuantity;
-    }
-
-    public Integer getItemId()
-    {
-        return itemId;
-    }
-
-    public void setItemId(Integer itemId)
-    {
-        this.itemId = itemId;
-    }
-
-    public String getItemDescription()
-    {
-        return itemDescription;
-    }
-
-    public void setItemDescription(String itemDescription)
-    {
-        this.itemDescription = itemDescription;
-    }
-
-    public double getItemDiscount()
-    {
-        return itemDiscount;
-    }
-
-    public void setItemDiscount(double itemDiscount)
-    {
-        this.itemDiscount = itemDiscount;
-    }
-
-    public double getItemPrice()
-    {
-        return itemPrice;
-    }
-
-    public void setItemPrice(double itemPrice)
-    {
-        this.itemPrice = itemPrice;
-    }
-
-    public int getItemQuantity()
-    {
-        return itemQuantity;
-    }
-
-    public void setItemQuantity(int itemQuantity)
-    {
-        this.itemQuantity = itemQuantity;
-    }
-
-    public Orders getOrder()
-    {
-        return order;
-    }
-
-    public void setOrder(Orders order)
-    {
-        this.order = order;
-    }
-
-    public Products getProduct()
-    {
-        return product;
-    }
-
-    public void setProduct(Products product)
-    {
         this.product = product;
     }
 
-    public Users getUserId()
-    {
+    public Integer getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(Integer itemId) {
+        this.itemId = itemId;
+    }
+
+    public String getItemDescription() {
+        return itemDescription;
+    }
+
+    public void setItemDescription(String itemDescription) {
+        this.itemDescription = itemDescription;
+    }
+
+    public double getItemDiscount() {
+        return itemDiscount;
+    }
+
+    public void setItemDiscount(double itemDiscount) {
+        this.itemDiscount = itemDiscount;
+    }
+
+    public double getItemPrice() {
+        return itemPrice;
+    }
+
+    public void setItemPrice(double itemPrice) {
+        this.itemPrice = itemPrice;
+    }
+
+    public double getItemQuantity() {
+        return itemQuantity;
+    }
+
+    public void setItemQuantity(double itemQuantity) {
+        this.itemQuantity = itemQuantity;
+    }
+
+    public Orders getOrder() {
+        return order;
+    }
+
+    public void setOrder(Orders order) {
+        this.order = order;
+    }
+
+    public Products getProduct() {
+        return product;
+    }
+
+    public void setProduct(Products product) {
+        this.product = product;
+    }
+
+    public Users getUserId() {
         return userId;
     }
 
-    public void setUserId(Users userId)
-    {
+    public void setUserId(Users userId) {
         this.userId = userId;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int hash = 0;
         hash += (itemId != null ? itemId.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object)
-    {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof OrderItems))
-        {
+    public boolean equals(Object object) {
+        if (!(object instanceof OrderItems)) {
             return false;
         }
         OrderItems other = (OrderItems) object;
-        if ((this.itemId == null && other.itemId != null) || (this.itemId != null && !this.itemId.equals(other.itemId)))
-        {
-            return false;
-        }
-        return true;
+        return !((this.itemId == null && other.itemId != null) || (this.itemId != null && !this.itemId.equals(other.itemId)));
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "com.managedagents.entities.OrderItems[ itemId=" + itemId + " ]";
     }
-    
+
 }

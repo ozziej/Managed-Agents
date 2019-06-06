@@ -29,13 +29,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "company_users")
 @XmlRootElement
 @NamedQueries(
-{
-    @NamedQuery(name = "CompanyUsers.findAll", query = "SELECT c FROM CompanyUsers c"),
-    @NamedQuery(name = "CompanyUsers.findByCompanyUserId", query = "SELECT c FROM CompanyUsers c WHERE c.companyUserId = :companyUserId"),
-    @NamedQuery(name = "CompanyUsers.findByChangeSettings", query = "SELECT c FROM CompanyUsers c WHERE c.changeSettings = :changeSettings")
-})
-public class CompanyUsers implements Serializable
-{
+        {
+            @NamedQuery(name = "CompanyUsers.findAll", query = "SELECT c FROM CompanyUsers c"),
+            @NamedQuery(name = "CompanyUsers.findByUser", query = "SELECT c FROM CompanyUsers c LEFT JOIN FETCH c.company WHERE c.user = :user"),
+            @NamedQuery(name = "CompanyUsers.findByCompany", query = "SELECT c FROM CompanyUsers c LEFT JOIN FETCH c.user WHERE c.company = :company"),
+        })
+public class CompanyUsers implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -50,95 +49,74 @@ public class CompanyUsers implements Serializable
     @JsonIgnore
     @JoinColumn(name = "company_id", referencedColumnName = "company_id")
     @ManyToOne(optional = false)
-    private Companies companyId;
+    private Companies company;
     @JsonIgnore
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     @ManyToOne(optional = false)
     private Users user;
 
-    public CompanyUsers()
-    {
+    public CompanyUsers() {
+        this(new Companies(), new Users(), (short) 0);
     }
 
-    public CompanyUsers(Integer companyUserId)
-    {
-        this.companyUserId = companyUserId;
-    }
-
-    public CompanyUsers(Integer companyUserId, short changeSettings)
-    {
-        this.companyUserId = companyUserId;
+    public CompanyUsers(Companies company, Users user, short changeSettings) {
+        this.companyUserId = 0;
+        this.company = company;
+        this.user = user;
         this.changeSettings = changeSettings;
     }
 
-    public Integer getCompanyUserId()
-    {
+    public Integer getCompanyUserId() {
         return companyUserId;
     }
 
-    public void setCompanyUserId(Integer companyUserId)
-    {
+    public void setCompanyUserId(Integer companyUserId) {
         this.companyUserId = companyUserId;
     }
 
-    public short getChangeSettings()
-    {
+    public short getChangeSettings() {
         return changeSettings;
     }
 
-    public void setChangeSettings(short changeSettings)
-    {
+    public void setChangeSettings(short changeSettings) {
         this.changeSettings = changeSettings;
     }
 
-    public Companies getCompanyId()
-    {
-        return companyId;
+    public Companies getCompany() {
+        return company;
     }
 
-    public void setCompanyId(Companies companyId)
-    {
-        this.companyId = companyId;
+    public void setCompany(Companies company) {
+        this.company = company;
     }
 
-    public Users getUser()
-    {
+    public Users getUser() {
         return user;
     }
 
-    public void setUser(Users user)
-    {
+    public void setUser(Users user) {
         this.user = user;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int hash = 0;
         hash += (companyUserId != null ? companyUserId.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object)
-    {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CompanyUsers))
-        {
+    public boolean equals(Object object) {
+        if (!(object instanceof CompanyUsers)) {
             return false;
         }
         CompanyUsers other = (CompanyUsers) object;
-        if ((this.companyUserId == null && other.companyUserId != null) || (this.companyUserId != null && !this.companyUserId.equals(other.companyUserId)))
-        {
-            return false;
-        }
-        return true;
+        return !((this.companyUserId == null && other.companyUserId != null) || (this.companyUserId != null && !this.companyUserId.equals(other.companyUserId)));
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "com.managedagents.entities.CompanyUsers[ companyUserId=" + companyUserId + " ]";
     }
-    
+
 }

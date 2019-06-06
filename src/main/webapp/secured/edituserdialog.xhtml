@@ -12,22 +12,45 @@
                 Edit User Details for User ID : #{usersController.selectedUser.userId}
             </f:facet>
             <h:form id="usersEditForm">
-                <p:panelGrid columns="2" id="userPanel" style="border: none;">
+                <p:panelGrid columns="4" id="userPanel" style="border: none;">
                     <p:outputLabel value="Title"/>
                     <p:selectOneMenu id="title" value="#{usersController.selectedUser.title}">
                         <f:selectItem itemValue="Mr." itemLabel="Mr."/>
                         <f:selectItem itemValue="Mrs." itemLabel="Mrs."/>
                     </p:selectOneMenu>
+                    <p:outputLabel value="Country"/>
+                    <p:inputText id="country" value="#{usersController.selectedUser.country}"/>                    
                     <p:outputLabel value="First Name"/>
                     <p:inputText value="#{usersController.selectedUser.firstName}"/>
+                    <p:outputLabel value="City"/>
+                    <p:inputText id="city" value="#{usersController.selectedUser.city}"/>
                     <p:outputLabel value="Surname"/>
                     <p:inputText value="#{usersController.selectedUser.surname}"/>
-                    <p:commandButton value="Save" action="#{usersController.updateUser}" oncomplete="handleSubmit(args, 'usersEditDialog');"
-                                     update=":userListForm:userDataTable"/>
-                    <p:commandButton value="Cancel" onclick="PF('usersEditDialog').hide()" action="#{usersController.cancelChanges}" immediate="true">
-                        <p:confirm header="Confirmation" message="Are you sure you wish to cancel all changes ?" icon="ui-icon-alert" />
-                    </p:commandButton>
+                    <p:outputLabel value="Suburb"/>
+                    <p:inputText id="suburb" value="#{usersController.selectedUser.suburb}"/>
+                    <p:outputLabel value="Other Name"/>
+                    <p:inputText value="#{usersController.selectedUser.otherName}"/>
+                    <p:outputLabel value="Gender"/>
+                    <p:selectOneMenu id="gender" value="#{usersController.selectedUser.gender}">
+                        <f:selectItem itemValue="MALE" itemLabel="Male"/>
+                        <f:selectItem itemValue="FEMALE" itemLabel="Female"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Email Address"/>
+                    <p:inputText id="emailAddress" value="#{usersController.selectedUser.emailAddress}"/>
+                    <p:outputLabel value="Date of Birth"/>
+                    <p:calendar id="dateOfBirth" value="#{usersController.selectedUser.dateOfBirth}"/>
+                    <p:outputLabel value="Phone Number"/>
+                    <p:inputText id="phoneNumber" value="#{usersController.selectedUser.phoneNumber}"/>
+                    <p:outputLabel value="Cell Number"/>
+                    <p:inputText id="cellNumber" value="#{usersController.selectedUser.cellNumber}"/>
+                    <p:outputLabel value="Other Details"/>
+                    <p:inputTextarea id="otherDetails" value="#{usersController.selectedUser.otherDetails}" rows="4" cols="20"/>
                 </p:panelGrid>
+                <p:commandButton value="Save" action="#{usersController.updateUser}" oncomplete="handleSubmit(args, 'usersEditDialog');"
+                                 update="#{usersController.updateElements}"/>
+                <p:commandButton value="Cancel" onclick="PF('usersEditDialog').hide()" action="#{usersController.cancelChanges}" immediate="true">
+                    <p:confirm header="Confirmation" message="Are you sure you wish to cancel all changes ?" icon="pi pi-exclamation-triangle" />
+                </p:commandButton>
             </h:form>
         </p:dialog>
     </ui:composition>

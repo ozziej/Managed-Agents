@@ -30,6 +30,7 @@ public class AuthenticationFilter implements Filter
     
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+        //no implementation required
     }
 
     @Override
@@ -48,7 +49,7 @@ public class AuthenticationFilter implements Filter
 
     @Override
     public void destroy() {
-        
+        //no implementation required
     }
     
 }

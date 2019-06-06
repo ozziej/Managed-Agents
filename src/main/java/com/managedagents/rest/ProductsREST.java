@@ -10,7 +10,7 @@ import com.managedagents.stateless.ProductsBean;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -26,12 +26,20 @@ public class ProductsREST
     @Inject
     private ProductsBean productsBean;
     
-    @GET
+    @POST
     @Path("/productsList")
     @Produces({MediaType.APPLICATION_JSON})
     public List<Products> getProductsList()
     {
-        List<Products> allProducts = productsBean.findAllProducts();
-        return allProducts;
+        return productsBean.findAllProducts();
     }
+    
+    @POST
+    @Path("/validProductsList")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Products> getAllValidProductsList()
+    {
+        return productsBean.findAllValidProducts();
+    }
+    
 }

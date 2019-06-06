@@ -5,6 +5,7 @@
  */
 package com.managedagents.beans;
 
+import com.managedagents.constants.DefaultMessages;
 import com.managedagents.entities.OrderItems;
 import com.managedagents.entities.Orders;
 import com.managedagents.entities.Products;
@@ -33,8 +34,7 @@ import org.primefaces.model.SortOrder;
  */
 @Named
 @ViewScoped
-public class OrdersController implements Serializable
-{
+public class OrdersController implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -64,25 +64,19 @@ public class OrdersController implements Serializable
     private boolean orderSelectable;
 
     @PostConstruct
-    public void init()
-    {
+    public void init() {
         currentUser = loginBean.getCurrentUser();
         getOrdersList();
     }
 
-    public void getOrdersList()
-    {
-        orders = new LazyDataModel<Orders>()
-        {
+    public void getOrdersList() {
+        orders = new LazyDataModel<Orders>() {
             private static final long serialVersionUID = 1L;
 
             @Override
-            public Orders getRowData(String rowKey)
-            {
-                for (Orders order : orders)
-                {
-                    if (order.getOrderId().equals(Integer.parseInt(rowKey)))
-                    {
+            public Orders getRowData(String rowKey) {
+                for (Orders order : orders.getWrappedData()) {
+                    if (order.getOrderId().equals(Integer.parseInt(rowKey))) {
                         return order;
                     }
                 }
@@ -90,8 +84,7 @@ public class OrdersController implements Serializable
             }
 
             @Override
-            public List<Orders> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters)
-            {
+            public List<Orders> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
                 List<Orders> orderList = ordersBean.findAllOrders(first, pageSize, sortField, sortOrder, filters);
                 Long rowCount = ordersBean.countAllOrders(sortField, sortOrder, filters);
                 orders.setRowCount(rowCount.intValue());
@@ -100,57 +93,57 @@ public class OrdersController implements Serializable
         };
     }
 
-    public void updateOrder()
-    {
+    public void updateOrder() {
         String shortMessage;
         String fullMessage;
         FacesContext context = FacesContext.getCurrentInstance();
         FacesMessage.Severity severity = FacesMessage.SEVERITY_INFO;
 
-        if (selectedOrder != null)
-        {
+        if (selectedOrder != null) {
             selectedOrder.setEditingUser(null);
             selectedOrder.setModificationDate(Calendar.getInstance().getTime());
-            ordersBean.editOrder(selectedOrder);
-            shortMessage = "Order Updated.";
-            fullMessage = "Order number " + selectedOrder.getOrderId() + " was updated.";
+            if (selectedOrder.getOrderId().equals(0)) {
+                selectedOrder = ordersBean.addNewOrder(selectedOrder);
+                shortMessage = "Order Created.";
+                fullMessage = "New order number " + selectedOrder.getOrderId() + " was updated.";
+            }
+            else {
+                ordersBean.editOrder(selectedOrder);
+                shortMessage = "Order Updated.";
+                fullMessage = "Order number " + selectedOrder.getOrderId() + " was updated.";
+            }
         }
-        else
-        {
-            shortMessage = "Error.";
+        else {
+            shortMessage = DefaultMessages.DEFAULT_ERROR;
             fullMessage = "Nothing selected.";
             severity = FacesMessage.SEVERITY_ERROR;
         }
         selectedOrder = null;
+        orderSelectable = false;
         context.addMessage(null, new FacesMessage(severity, shortMessage, fullMessage));
-
     }
 
-    public void removeOrderItem(OrderItems item)
-    {
+    public void removeOrderItem(OrderItems item) {
         String shortMessage;
         String fullMessage;
         FacesContext context = FacesContext.getCurrentInstance();
         FacesMessage.Severity severity = FacesMessage.SEVERITY_INFO;
         List<OrderItems> orderItemsList = selectedOrder.getOrderItemsList();
-        if (item != null)
-        {
+        if (item != null) {
             orderItemsList.remove(item);
             selectedOrder.setOrderItemsList(orderItemsList);
             shortMessage = "Removed";
             fullMessage = "Item " + item.getItemDescription() + " was removed.";
         }
-        else
-        {
-            shortMessage = "Error.";
+        else {
+            shortMessage = DefaultMessages.DEFAULT_ERROR;
             fullMessage = "Nothing selected.";
             severity = FacesMessage.SEVERITY_ERROR;
         }
         context.addMessage(null, new FacesMessage(severity, shortMessage, fullMessage));
     }
 
-    public void addProductToList()
-    {
+    public void addProductToList() {
         String shortMessage;
         String fullMessage;
         FacesContext context = FacesContext.getCurrentInstance();
@@ -158,19 +151,16 @@ public class OrdersController implements Serializable
         List<OrderItems> orderItemsList = selectedOrder.getOrderItemsList();
 
         OrderItems item = new OrderItems();
-        if (selectedProduct != null)
-        {
-            Boolean containsProduct = orderItemsList.stream().filter(i -> i.getProduct().equals(selectedProduct))
-                    .findAny()
-                    .isPresent();
-            if (!containsProduct)
-            {
+        if (selectedProduct != null) {
+            Boolean containsProduct = orderItemsList.stream().anyMatch(i -> i.getProduct().equals(selectedProduct));
+            if (!containsProduct) {
                 item.setItemId(0);
                 item.setItemDescription(selectedProduct.getProductDescription());
                 item.setItemPrice(selectedProduct.getProductPrice());
                 item.setItemQuantity(1);
                 item.setOrder(selectedOrder);
                 item.setProduct(selectedProduct);
+                item.setUserId(currentUser);
 
                 orderItemsList.add(item);
                 selectedOrder.setOrderItemsList(orderItemsList);
@@ -178,45 +168,39 @@ public class OrdersController implements Serializable
                 shortMessage = "Added.";
                 fullMessage = selectedProduct.getProductDescription() + " was added.";
             }
-            else
-            {
+            else {
                 severity = FacesMessage.SEVERITY_WARN;
                 shortMessage = "Warning.";
                 fullMessage = selectedProduct.getProductDescription() + " is already present, please change quantity.";
             }
         }
-        else
-        {
-            shortMessage = "Error.";
+        else {
+            shortMessage = DefaultMessages.DEFAULT_ERROR;
             fullMessage = "Nothing Selected.";
             severity = FacesMessage.SEVERITY_ERROR;
         }
         context.addMessage(null, new FacesMessage(severity, shortMessage, fullMessage));
     }
 
-    public void newOrder()
-    {
+    public void newOrder() {
         selectedOrder = new Orders(currentUser);
         productList = productsBean.findAllProducts();
     }
 
-    public void editExistingOrder()
-    {
+    public void editExistingOrder() {
         selectedOrder.setEditingUser(currentUser);
         selectedOrder.setModificationDate(Calendar.getInstance().getTime());
         ordersBean.editOrder(selectedOrder);
         productList = productsBean.findAllProducts();
     }
 
-    public void cancelChanges()
-    {
+    public void cancelChanges() {
         String shortMessage = "Cancel.";
         String fullMessage = "Selection Canceled.";
         FacesContext context = FacesContext.getCurrentInstance();
         FacesMessage.Severity severity = FacesMessage.SEVERITY_INFO;
         Integer orderId = selectedOrder.getOrderId();
-        if (orderId != 0)
-        {
+        if (orderId != 0) {
             selectedOrder = ordersBean.findOrderById(orderId);
             selectedOrder.setEditingUser(null);
             selectedOrder.setModificationDate(Calendar.getInstance().getTime());
@@ -227,13 +211,11 @@ public class OrdersController implements Serializable
         context.addMessage(null, new FacesMessage(severity, shortMessage, fullMessage));
     }
 
-    public boolean isOrderSelectable()
-    {
+    public boolean isOrderSelectable() {
         return orderSelectable;
     }
 
-    private boolean editTimeExpired()
-    {
+    private boolean editTimeExpired() {
         Calendar currentTime = Calendar.getInstance();
         Calendar modificationTime = Calendar.getInstance();
         modificationTime.setTime(selectedOrder.getModificationDate());
@@ -241,112 +223,90 @@ public class OrdersController implements Serializable
         return currentTime.after(modificationTime);
     }
 
-    public void onRowSelect(SelectEvent event)
-    {
+    public void onRowSelect(SelectEvent event) {
         selectedOrder = (Orders) event.getObject();
         Users editingUser;
-        String shortMessage;
-        String fullMessage;
+        String shortMessage = "";
+        String fullMessage = "";
         FacesContext context = FacesContext.getCurrentInstance();
         FacesMessage.Severity severity = FacesMessage.SEVERITY_INFO;
         orderSelectable = false;
 
-        if (selectedOrder != null)
-        {
+        if (selectedOrder != null) {
             editingUser = selectedOrder.getEditingUser();
-            if (editingUser == null || editingUser.equals(currentUser) || editTimeExpired())
-            {
-                shortMessage = "";
-                fullMessage = "";
+            if (editingUser == null || editingUser.equals(currentUser) || editTimeExpired()) {
                 orderSelectable = true;
             }
         }
 
-        if (!orderSelectable)
-        {
-            shortMessage = "Error.";
+        if (!orderSelectable) {
+            shortMessage = DefaultMessages.DEFAULT_ERROR;
             fullMessage = "Order currently being edited";
-            context.addMessage(null, new FacesMessage(severity, shortMessage, fullMessage));
         }
+        context.addMessage(null, new FacesMessage(severity, shortMessage, fullMessage));
     }
 
-    public void onFilterEvent(FilterEvent event)
-    {
+    public void onFilterEvent(FilterEvent event) {
         selectedOrder = null;
     }
 
-    public void onPaginationEvent(PageEvent event)
-    {
+    public void onPaginationEvent(PageEvent event) {
         selectedOrder = null;
     }
 
-    public Users getCurrentUser()
-    {
+    public Users getCurrentUser() {
         return currentUser;
     }
 
-    public void setCurrentUser(Users currentUser)
-    {
+    public void setCurrentUser(Users currentUser) {
         this.currentUser = currentUser;
     }
 
-    public Orders getSelectedOrder()
-    {
+    public Orders getSelectedOrder() {
         return selectedOrder;
     }
 
-    public void setSelectedOrder(Orders selectedOrder)
-    {
+    public void setSelectedOrder(Orders selectedOrder) {
         this.selectedOrder = selectedOrder;
     }
 
-    public LazyDataModel<Orders> getOrders()
-    {
+    public LazyDataModel<Orders> getOrders() {
         return orders;
     }
 
-    public void setOrders(LazyDataModel<Orders> orders)
-    {
+    public void setOrders(LazyDataModel<Orders> orders) {
         this.orders = orders;
     }
 
-    public OrderItems getSelectedOrderItem()
-    {
+    public OrderItems getSelectedOrderItem() {
         return selectedOrderItem;
     }
 
-    public void setSelectedOrderItem(OrderItems selectedOrderItem)
-    {
+    public void setSelectedOrderItem(OrderItems selectedOrderItem) {
         this.selectedOrderItem = selectedOrderItem;
     }
 
-    public Products getSelectedProduct()
-    {
+    public Products getSelectedProduct() {
         return selectedProduct;
     }
 
-    public void setSelectedProduct(Products selectedProduct)
-    {
+    public void setSelectedProduct(Products selectedProduct) {
         this.selectedProduct = selectedProduct;
     }
 
-    public List<Products> getProductList()
-    {
+    public List<Products> getProductList() {
         return productList;
     }
 
-    public void setProductList(List<Products> productList)
-    {
+    public void setProductList(List<Products> productList) {
         this.productList = productList;
     }
 
-    public String getSelectedProductId()
-    {
+    public String getSelectedProductId() {
         return selectedProductId;
     }
 
-    public void setSelectedProductId(String selectedProductId)
-    {
+    public void setSelectedProductId(String selectedProductId) {
         this.selectedProductId = selectedProductId;
     }
 

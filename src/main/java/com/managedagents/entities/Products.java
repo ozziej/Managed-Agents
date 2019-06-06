@@ -5,8 +5,8 @@
  */
 package com.managedagents.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -36,17 +36,16 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "products")
 @XmlRootElement
 @NamedQueries(
-{
-    @NamedQuery(name = "Products.findAll", query = "SELECT p FROM Products p"),
-    @NamedQuery(name = "Products.findByProductId", query = "SELECT p FROM Products p WHERE p.productId = :productId"),
-    @NamedQuery(name = "Products.findByProductSingleType", query = "SELECT p FROM Products p WHERE p.productSingleType = :productSingleType"),
-    @NamedQuery(name = "Products.findByProductMaximum", query = "SELECT p FROM Products p WHERE p.productMaximum = :productMaximum"),
-    @NamedQuery(name = "Products.findByProductPrice", query = "SELECT p FROM Products p WHERE p.productPrice = :productPrice"),
-    @NamedQuery(name = "Products.findByProductValidFrom", query = "SELECT p FROM Products p WHERE p.productValidFrom = :productValidFrom"),
-    @NamedQuery(name = "Products.findByProductValidUntil", query = "SELECT p FROM Products p WHERE p.productValidUntil = :productValidUntil")
-})
-public class Products implements Serializable
-{
+        {
+            @NamedQuery(name = "Products.findAll", query = "SELECT p FROM Products p"),
+            @NamedQuery(name = "Products.findByProductId", query = "SELECT p FROM Products p WHERE p.productId = :productId"),
+            @NamedQuery(name = "Products.findByProductSingleType", query = "SELECT p FROM Products p WHERE p.productSingleType = :productSingleType"),
+            @NamedQuery(name = "Products.findByProductMaximum", query = "SELECT p FROM Products p WHERE p.productMaximum = :productMaximum"),
+            @NamedQuery(name = "Products.findByProductPrice", query = "SELECT p FROM Products p WHERE p.productPrice = :productPrice"),
+            @NamedQuery(name = "Products.findByProductValidFrom", query = "SELECT p FROM Products p WHERE p.productValidFrom = :productValidFrom"),
+            @NamedQuery(name = "Products.findByProductValidUntil", query = "SELECT p FROM Products p WHERE p.productValidUntil = :productValidUntil")
+        })
+public class Products implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -84,21 +83,14 @@ public class Products implements Serializable
     private Date productValidUntil;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "productId")
     private List<ProductImages> productImagesList;
-    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private List<OrderItems> orderItemsList;
 
-    public Products()
-    {
+    public Products() {
+        this(0, "None", (short) 0, 0, 0, Calendar.getInstance().getTime(), Calendar.getInstance().getTime());
     }
 
-    public Products(Integer productId)
-    {
-        this.productId = productId;
-    }
-
-    public Products(Integer productId, String productDescription, short productSingleType, int productMaximum, double productPrice, Date productValidFrom, Date productValidUntil)
-    {
+    public Products(Integer productId, String productDescription, short productSingleType, int productMaximum, double productPrice, Date productValidFrom, Date productValidUntil) {
         this.productId = productId;
         this.productDescription = productDescription;
         this.productSingleType = productSingleType;
@@ -108,126 +100,99 @@ public class Products implements Serializable
         this.productValidUntil = productValidUntil;
     }
 
-    public Integer getProductId()
-    {
+    public Integer getProductId() {
         return productId;
     }
 
-    public void setProductId(Integer productId)
-    {
+    public void setProductId(Integer productId) {
         this.productId = productId;
     }
 
-    public String getProductDescription()
-    {
+    public String getProductDescription() {
         return productDescription;
     }
 
-    public void setProductDescription(String productDescription)
-    {
+    public void setProductDescription(String productDescription) {
         this.productDescription = productDescription;
     }
 
-    public short getProductSingleType()
-    {
+    public short getProductSingleType() {
         return productSingleType;
     }
 
-    public void setProductSingleType(short productSingleType)
-    {
+    public void setProductSingleType(short productSingleType) {
         this.productSingleType = productSingleType;
     }
 
-    public int getProductMaximum()
-    {
+    public int getProductMaximum() {
         return productMaximum;
     }
 
-    public void setProductMaximum(int productMaximum)
-    {
+    public void setProductMaximum(int productMaximum) {
         this.productMaximum = productMaximum;
     }
 
-    public double getProductPrice()
-    {
+    public double getProductPrice() {
         return productPrice;
     }
 
-    public void setProductPrice(double productPrice)
-    {
+    public void setProductPrice(double productPrice) {
         this.productPrice = productPrice;
     }
 
-    public Date getProductValidFrom()
-    {
+    public Date getProductValidFrom() {
         return productValidFrom;
     }
 
-    public void setProductValidFrom(Date productValidFrom)
-    {
+    public void setProductValidFrom(Date productValidFrom) {
         this.productValidFrom = productValidFrom;
     }
 
-    public Date getProductValidUntil()
-    {
+    public Date getProductValidUntil() {
         return productValidUntil;
     }
 
-    public void setProductValidUntil(Date productValidUntil)
-    {
+    public void setProductValidUntil(Date productValidUntil) {
         this.productValidUntil = productValidUntil;
     }
 
     @XmlTransient
-    public List<ProductImages> getProductImagesList()
-    {
+    public List<ProductImages> getProductImagesList() {
         return productImagesList;
     }
 
-    public void setProductImagesList(List<ProductImages> productImagesList)
-    {
+    public void setProductImagesList(List<ProductImages> productImagesList) {
         this.productImagesList = productImagesList;
     }
 
     @XmlTransient
-    public List<OrderItems> getOrderItemsList()
-    {
+    public List<OrderItems> getOrderItemsList() {
         return orderItemsList;
     }
 
-    public void setOrderItemsList(List<OrderItems> orderItemsList)
-    {
+    public void setOrderItemsList(List<OrderItems> orderItemsList) {
         this.orderItemsList = orderItemsList;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int hash = 0;
         hash += (productId != null ? productId.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object)
-    {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Products))
-        {
+    public boolean equals(Object object) {
+        if (!(object instanceof Products)) {
             return false;
         }
         Products other = (Products) object;
-        if ((this.productId == null && other.productId != null) || (this.productId != null && !this.productId.equals(other.productId)))
-        {
-            return false;
-        }
-        return true;
+        return !((this.productId == null && other.productId != null) || (this.productId != null && !this.productId.equals(other.productId)));
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return this.productId.toString();
     }
-    
+
 }

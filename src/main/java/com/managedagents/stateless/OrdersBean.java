@@ -27,6 +27,8 @@ import org.primefaces.model.SortOrder;
 @Stateless
 public class OrdersBean
 {
+    public static final String ORDER_ID = "orderId";
+    
     @PersistenceContext(unitName = "ManagedAgentsPU")
     private EntityManager em;
     
@@ -46,7 +48,7 @@ public class OrdersBean
     public Orders findOrderById(Integer orderId)
     {
         TypedQuery<Orders> query = em.createNamedQuery("Orders.findByOrderId", Orders.class);
-        query.setParameter("orderId", orderId);
+        query.setParameter(ORDER_ID, orderId);
         if (query.getResultList().isEmpty())
         {
             return null;
@@ -65,7 +67,7 @@ public class OrdersBean
         
         if (sortField == null)
         {
-            sortField = "orderId";
+            sortField = ORDER_ID;
         }
         
         if (sortOrder.equals(SortOrder.ASCENDING))
@@ -79,7 +81,7 @@ public class OrdersBean
         List<Predicate> predicateList = new ArrayList<>();
         for (Map.Entry<String, Object> filter : filters.entrySet())
         {
-            if (filter.getKey().equals("orderStatus") || filter.getKey().equals("orderId"))
+            if (filter.getKey().equals("orderStatus") || filter.getKey().equals(ORDER_ID))
             {
                 predicateList.add(cb.equal(order.get(filter.getKey()), filter.getValue().toString()));
             }
@@ -105,7 +107,7 @@ public class OrdersBean
         
         if (sortField == null)
         {
-            sortField = "orderId";
+            sortField = ORDER_ID;
         }
         
         if (sortOrder.equals(SortOrder.ASCENDING))
@@ -119,7 +121,7 @@ public class OrdersBean
         List<Predicate> predicateList = new ArrayList<>();
         for (Map.Entry<String, Object> filter : filters.entrySet())
         {
-            if (filter.getKey().equals("orderStatus") || filter.getKey().equals("orderId"))
+            if (filter.getKey().equals("orderStatus") || filter.getKey().equals(ORDER_ID))
             {
                 predicateList.add(cb.equal(order.get(filter.getKey()), filter.getValue().toString()));
             }
@@ -141,8 +143,7 @@ public class OrdersBean
         {
             typedQuery.setMaxResults(pageSize);
         }
-        List<Orders> orderList = typedQuery.getResultList();
-        return orderList;
+        return typedQuery.getResultList();
     }
     
     public Orders addNewOrder(Orders orders)
@@ -157,5 +158,11 @@ public class OrdersBean
         orders = em.merge(orders);
         em.flush();
         return orders;
+    }
+    
+    public void deleteOrder(Orders orders){
+        orders = em.find(Orders.class, orders.getOrderId());
+        em.remove(orders);
+        em.flush();
     }
 }

@@ -5,13 +5,13 @@
  */
 package com.managedagents.converters;
 
-import com.managedagents.stateless.ProductsBean;
+import com.managedagents.stateless.CompaniesBean;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
 import javax.faces.convert.Converter;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  *
@@ -19,26 +19,21 @@ import javax.inject.Inject;
  */
 @RequestScoped
 @Named
-public class ProductConverter implements Converter
-{
+public class CompanyConverter implements Converter{
     @Inject
-    private ProductsBean productsBean;
-    
+    private CompaniesBean companiesBean;
+
     @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value)
-    {
-        return productsBean.findByProductId(Integer.parseInt(value));
+    public Object getAsObject(FacesContext context, UIComponent component, String value) {
+        return companiesBean.findCompaniesById(Integer.parseInt(value));
     }
 
     @Override
-    public String getAsString(FacesContext context, UIComponent component, Object value)
-    {
-        if (value == null)
-        {
+    public String getAsString(FacesContext context, UIComponent component, Object value) {
+        if (value == null){
             return "";
         }
-        else
-        {
+        else{
             return value.toString();
         }
     }

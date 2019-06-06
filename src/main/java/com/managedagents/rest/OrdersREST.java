@@ -7,6 +7,7 @@ package com.managedagents.rest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.managedagents.entities.GenericResponse;
 import com.managedagents.entities.Orders;
 import com.managedagents.entities.Users;
 import com.managedagents.stateless.OrdersBean;
@@ -31,8 +32,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Stateless
 @Path("orders")
-public class OrdersREST
-{
+public class OrdersREST {
 
     @Inject
     private OrdersBean ordersBean;
@@ -42,45 +42,93 @@ public class OrdersREST
 
     @POST
     @Path("/userOrders")
-    @Consumes(
-            {
-                MediaType.APPLICATION_JSON
-            }
-    )
-    @Produces(
-            {
-                MediaType.APPLICATION_JSON
-            }
-    )
-    public List<Orders> getUserOrders(String jsonString)
-    {
+    @Consumes({
+        MediaType.APPLICATION_JSON
+    })
+    @Produces({
+        MediaType.APPLICATION_JSON
+    })
+    public List<Orders> getUserOrders(String jsonString) {
         Integer userId;
         List<Orders> orderList = null;
         Users user = null;
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> map = new HashMap<>();
-        
-        try
-        {
-            map = mapper.readValue(jsonString, new TypeReference<Map<String, Object>>()
-            {
+
+        try {
+            map = mapper.readValue(jsonString, new TypeReference<Map<String, Object>>() {
             });
         }
-        catch (IOException ex)
-        {
+        catch (IOException ex) {
             Logger.getLogger(UsersREST.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         userId = (Integer) map.getOrDefault("userId", 0);
-        if (userId > 0)
-        {
+        if (userId > 0) {
             user = usersBean.findUserByUserId(userId);
         }
-        
-        if (user != null)
-        {
+
+        if (user != null) {
             orderList = ordersBean.findUserOrders(user);
         }
         return orderList;
+    }
+
+    @Consumes({
+        MediaType.APPLICATION_JSON
+    })
+    @Produces({
+        MediaType.APPLICATION_JSON
+    })
+    @POST
+    @Path("/updateOrder")
+    public GenericResponse updateOrder(Orders order) {
+        String result;
+        GenericResponse.ResponseCode resultCode;
+
+        GenericResponse response;
+
+        if (!order.getOrderId().equals(0)) {
+            ordersBean.editOrder(order);
+            result = "Order" + order.getOrderId() + " updated.";
+            resultCode = GenericResponse.ResponseCode.SUCCESSFUL;
+        }
+        else {
+            order = ordersBean.addNewOrder(order);
+            result = "Order" + order.getOrderId() + " created.";
+            resultCode = GenericResponse.ResponseCode.SUCCESSFUL;
+        }
+
+        response = new GenericResponse(resultCode, result);
+        return response;
+    }
+
+    @Consumes({
+        MediaType.APPLICATION_JSON
+    })
+    @Produces({
+        MediaType.APPLICATION_JSON
+    })
+    @POST
+    @Path("/deleteOrder")
+    public GenericResponse deleteOrder(Orders order) {
+        String result;
+        GenericResponse.ResponseCode resultCode;
+
+        GenericResponse response;
+        Integer orderId = order.getOrderId();
+
+        if (!orderId.equals(0)) {
+            ordersBean.deleteOrder(order);
+            result = "Order " + orderId + " Deleted.";
+            resultCode = GenericResponse.ResponseCode.SUCCESSFUL;
+        }
+        else {
+            result = "Error. Invalid Order.";
+            resultCode = GenericResponse.ResponseCode.ERROR;
+        }
+
+        response = new GenericResponse(resultCode, result);
+        return response;
     }
 }

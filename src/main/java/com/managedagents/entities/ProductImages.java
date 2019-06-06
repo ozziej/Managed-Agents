@@ -31,13 +31,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "product_images")
 @XmlRootElement
 @NamedQueries(
-{
-    @NamedQuery(name = "ProductImages.findAll", query = "SELECT p FROM ProductImages p"),
-    @NamedQuery(name = "ProductImages.findByProductImageId", query = "SELECT p FROM ProductImages p WHERE p.productImageId = :productImageId"),
-    @NamedQuery(name = "ProductImages.findByImageDescription", query = "SELECT p FROM ProductImages p WHERE p.imageDescription = :imageDescription")
-})
-public class ProductImages implements Serializable
-{
+        {
+            @NamedQuery(name = "ProductImages.findAll", query = "SELECT p FROM ProductImages p"),
+            @NamedQuery(name = "ProductImages.findByProductImageId", query = "SELECT p FROM ProductImages p WHERE p.productImageId = :productImageId"),
+            @NamedQuery(name = "ProductImages.findByImageDescription", query = "SELECT p FROM ProductImages p WHERE p.imageDescription = :imageDescription")
+        })
+public class ProductImages implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -61,90 +60,67 @@ public class ProductImages implements Serializable
     @ManyToOne(optional = false)
     private Products productId;
 
-    public ProductImages()
-    {
+    public ProductImages() {
+        this(0, "None", "None");
     }
 
-    public ProductImages(Integer productImageId)
-    {
-        this.productImageId = productImageId;
-    }
-
-    public ProductImages(Integer productImageId, String imageDescription, String imageUri)
-    {
+    public ProductImages(Integer productImageId, String imageDescription, String imageUri) {
         this.productImageId = productImageId;
         this.imageDescription = imageDescription;
         this.imageUri = imageUri;
     }
 
-    public Integer getProductImageId()
-    {
+    public Integer getProductImageId() {
         return productImageId;
     }
 
-    public void setProductImageId(Integer productImageId)
-    {
+    public void setProductImageId(Integer productImageId) {
         this.productImageId = productImageId;
     }
 
-    public String getImageDescription()
-    {
+    public String getImageDescription() {
         return imageDescription;
     }
 
-    public void setImageDescription(String imageDescription)
-    {
+    public void setImageDescription(String imageDescription) {
         this.imageDescription = imageDescription;
     }
 
-    public String getImageUri()
-    {
+    public String getImageUri() {
         return imageUri;
     }
 
-    public void setImageUri(String imageUri)
-    {
+    public void setImageUri(String imageUri) {
         this.imageUri = imageUri;
     }
 
-    public Products getProductId()
-    {
+    public Products getProductId() {
         return productId;
     }
 
-    public void setProductId(Products productId)
-    {
+    public void setProductId(Products productId) {
         this.productId = productId;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int hash = 0;
         hash += (productImageId != null ? productImageId.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object)
-    {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ProductImages))
-        {
+    public boolean equals(Object object) {
+        if (!(object instanceof ProductImages)) {
             return false;
         }
         ProductImages other = (ProductImages) object;
-        if ((this.productImageId == null && other.productImageId != null) || (this.productImageId != null && !this.productImageId.equals(other.productImageId)))
-        {
-            return false;
-        }
-        return true;
+        return !((this.productImageId == null && other.productImageId != null) || (this.productImageId != null && !this.productImageId.equals(other.productImageId)));
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "com.managedagents.entities.ProductImages[ productImageId=" + productImageId + " ]";
     }
-    
+
 }

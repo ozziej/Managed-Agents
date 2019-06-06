@@ -5,6 +5,7 @@
  */
 package com.managedagents.beans;
 
+import com.managedagents.constants.DefaultMessages;
 import com.managedagents.entities.Users;
 import com.managedagents.stateless.PasswordManager;
 import com.managedagents.stateless.UsersBean;
@@ -55,7 +56,7 @@ public class LoginBean implements Serializable
         currentUser = usersBean.findUserByEmailAddress(emailAddress);
         if (currentUser == null)
         {
-            context.addMessage(null, new FacesMessage(severity, "Error!", "Invalid Username or Password"));
+            context.addMessage(null, new FacesMessage(severity, DefaultMessages.DEFAULT_ERROR, "Invalid Username or Password"));
             returnPage = "login.xhtml";
         }
         else
@@ -74,7 +75,7 @@ public class LoginBean implements Serializable
             if (!passwordManager.getEncryptedPassword().equals(currentUser.getUserPass()))
             {
                 currentUser = null;
-                context.addMessage(null, new FacesMessage(severity, "Error!", "Invalid Username or Password"));
+                context.addMessage(null, new FacesMessage(severity, DefaultMessages.DEFAULT_ERROR, "Invalid Username or Password"));
                 returnPage = "login.xhtml";
             }
             else

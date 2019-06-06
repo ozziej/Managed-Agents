@@ -28,6 +28,12 @@ public class ProductsBean
         return query.getResultList();
     }
     
+    public List<Products> findAllValidProducts()
+    {
+        TypedQuery<Products> query = em.createNamedQuery("Products.findAll", Products.class);
+        return query.getResultList();
+    }
+    
     public Products findByProductId(Integer productId)
     {
         TypedQuery<Products> query = em.createNamedQuery("Products.findByProductId", Products.class);

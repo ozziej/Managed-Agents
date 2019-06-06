@@ -7,6 +7,7 @@ package com.managedagents.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.managedagents.constants.OrderStatus;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,20 +44,12 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries(
         {
-            @NamedQuery(name = "Orders.findAll", query = "SELECT o FROM Orders o")
-            ,
-            @NamedQuery(name = "Orders.findByUser", query = "SELECT o FROM Orders o WHERE o.user = :user")
-            ,
-            @NamedQuery(name = "Orders.findByOrderId", query = "SELECT o FROM Orders o WHERE o.orderId = :orderId")
-            ,
-            @NamedQuery(name = "Orders.findByOrderDate", query = "SELECT o FROM Orders o WHERE o.orderDate = :orderDate")
-            ,
-            @NamedQuery(name = "Orders.findByModificationDate", query = "SELECT o FROM Orders o WHERE o.modificationDate = :modificationDate")
-            ,
+            @NamedQuery(name = "Orders.findAll", query = "SELECT o FROM Orders o"),
+            @NamedQuery(name = "Orders.findByUser", query = "SELECT o FROM Orders o WHERE o.user = :user"),
+            @NamedQuery(name = "Orders.findByOrderId", query = "SELECT o FROM Orders o WHERE o.orderId = :orderId"),
             @NamedQuery(name = "Orders.findByStatusType", query = "SELECT o FROM Orders o WHERE o.statusType = :statusType")
         })
-public class Orders implements Serializable
-{
+public class Orders implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -89,7 +82,9 @@ public class Orders implements Serializable
     @JoinColumn(name = "editing_user_id", referencedColumnName = "user_id")
     @ManyToOne
     private Users editingUser;
-    @JsonIgnore
+    @JoinColumn(name = "company_id", referencedColumnName = "company_id")
+    @ManyToOne
+    private Companies company;    
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     @ManyToOne(optional = false)
     private Users user;
@@ -97,132 +92,114 @@ public class Orders implements Serializable
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "order", fetch = FetchType.EAGER)
     private List<OrderItems> orderItemsList;
 
-    public Orders()
-    {
+    public Orders() {
     }
 
-    public Orders(Users editingUser)
-    {
+    public Orders(Users editingUser) {
         Date today = Calendar.getInstance().getTime();
         this.orderId = 0;
+        this.company = null;
         this.orderDate = today;
         this.orderComments = "New";
         this.modificationDate = today;
-        this.statusType = "NEW";
+        this.statusType = OrderStatus.NEW.name();
         this.editingUser = editingUser;
         this.user = editingUser;
         this.orderItemsList = new ArrayList<>();
     }
 
-    public Integer getOrderId()
-    {
+    public Integer getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(Integer orderId)
-    {
+    public void setOrderId(Integer orderId) {
         this.orderId = orderId;
     }
 
-    public Date getOrderDate()
-    {
+    public Date getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(Date orderDate)
-    {
+    public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
     }
 
-    public String getOrderComments()
-    {
+    public String getOrderComments() {
         return orderComments;
     }
 
-    public void setOrderComments(String orderComments)
-    {
+    public void setOrderComments(String orderComments) {
         this.orderComments = orderComments;
     }
 
-    public Date getModificationDate()
-    {
+    public Date getModificationDate() {
         return modificationDate;
     }
 
-    public void setModificationDate(Date modificationDate)
-    {
+    public void setModificationDate(Date modificationDate) {
         this.modificationDate = modificationDate;
     }
 
-    public String getStatusType()
-    {
+    public String getStatusType() {
         return statusType;
     }
 
-    public void setStatusType(String statusType)
-    {
+    public void setStatusType(String statusType) {
         this.statusType = statusType;
     }
 
-    public Users getEditingUser()
-    {
+    public Users getEditingUser() {
         return editingUser;
     }
 
-    public void setEditingUser(Users editingUser)
-    {
+    public void setEditingUser(Users editingUser) {
         this.editingUser = editingUser;
     }
 
-    public Users getUser()
-    {
+    public Users getUser() {
         return user;
     }
 
-    public void setUser(Users user)
-    {
+    public void setUser(Users user) {
         this.user = user;
     }
 
+    public Companies getCompany() {
+        return company;
+    }
+
+    public void setCompany(Companies company) {
+        this.company = company;
+    }
+
     @XmlTransient
-    public List<OrderItems> getOrderItemsList()
-    {
+    public List<OrderItems> getOrderItemsList() {
         return orderItemsList;
     }
 
-    public void setOrderItemsList(List<OrderItems> orderItemsList)
-    {
+    public void setOrderItemsList(List<OrderItems> orderItemsList) {
         this.orderItemsList = orderItemsList;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int hash = 0;
         hash += (orderId != null ? orderId.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object)
-    {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Orders))
-        {
+    public boolean equals(Object object) {
+        if (!(object instanceof Orders)) {
             return false;
         }
         Orders other = (Orders) object;
-        if ((this.orderId == null && other.orderId != null) || (this.orderId != null && !this.orderId.equals(other.orderId)))
-        {
-            return false;
-        }
-        return true;
+        return !((this.orderId == null && other.orderId != null) || (this.orderId != null && !this.orderId.equals(other.orderId)));
     }
 
     @Override
-    public String toString()
-    {
-        return "com.managedagents.entities.Orders[ orderId=" + orderId + " ]";
+    public String toString() {
+        return orderId.toString();
     }
 
 }

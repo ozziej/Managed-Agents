@@ -4,7 +4,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>My Details</title>
+        <title>Other Users</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </h:head>
     <h:body>
@@ -15,9 +15,9 @@
                                  paginator="true" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                                  rowsPerPageTemplate="5,10,15" selection="#{usersController.selectedUser}" selectionMode="single" widgetVar="userTable" lazy="true"
                                  rowKey="#{userData.userId}" paginatorPosition="top">
-                        <p:ajax event="rowSelect" listener="#{usersController.onRowSelect}" update=":userListForm:editSelectedUser"/>
-                        <p:ajax event="filter" listener="#{usersController.onFilterEvent}" update=":userListForm:editSelectedUser"/>
-                        <p:ajax event="page" listener="#{usersController.onPaginationEvent}" update=":userListForm:editSelectedUser"/>
+                        <p:ajax event="rowSelect" listener="#{usersController.onRowSelect}" update="#{usersController.buttonUpdate}"/>
+                        <p:ajax event="filter" listener="#{usersController.onFilterEvent}" update="#{usersController.buttonUpdate}"/>
+                        <p:ajax event="page" listener="#{usersController.onPaginationEvent}" update="#{usersController.buttonUpdate}"/>
                         <p:column headerText="User Name" sortBy="#{userData.surname}" filterBy="#{userData.surname}" filterMatchMode="contains">
                             <h:outputText value="#{userData.firstName} #{userData.surname}"/>
                         </p:column>
@@ -26,11 +26,20 @@
                         </p:column>
                     </p:dataTable>
                     <p:commandButton id="editSelectedUser" value="Edit Selected User" disabled="#{usersController.selectedUser == null}" oncomplete="PF('usersEditDialog').show()"
+                                     action="#{usersController.findUserCompanies}"
                                      update=":usersEditDialog"/>
+                    <p:commandButton id="editUserPassword" value="Change user Password" disabled="#{usersController.selectedUser == null}" oncomplete="PF('editPasswordDialog').show()"
+                                     update=":editPasswordDialog"/>
                     <p:commandButton id="newUser" value="Create New User" actionListener="#{usersController.createNewUser}" oncomplete="PF('usersEditDialog').show()"
                                      update=":usersEditDialog"/>
+                    <p:commandButton id="editUserCompanies" value="Edit Company List" disabled="#{usersController.selectedUser == null}" oncomplete="PF('editUserCompaniesDialog').show()"
+                                     action="#{usersController.findUserCompanies}"
+                                     actionListener="#{companiesController.findAllCompanies}"
+                                     update=":editUserCompaniesDialog"/>
                 </h:form>
                 <ui:include src="edituserdialog.xhtml"/>
+                <ui:include src="editpassworddialog.xhtml"/>
+                <ui:include src="editusercompaniesdialog.xhtml"/>
             </ui:define>
         </ui:composition>
     </h:body>

@@ -30,8 +30,8 @@
                 <p:dataTable id="orderItemsTable" var="itemData" widgetVar="itemData" value="#{ordersController.selectedOrder.orderItemsList}" rows="10"
                              paginator="true" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                              rowsPerPageTemplate="5,10,15" paginatorPosition="top">
-                    <p:column headerText="Remove" width="10%">
-                        <p:commandButton style="margin-left: 8px;" icon="ui-icon-trash" action="#{ordersController.removeOrderItem(itemData)}"
+                    <p:column headerText="Remove" width="15%">
+                        <p:commandButton style="margin-left: 8px;" icon="pi pi-trash" action="#{ordersController.removeOrderItem(itemData)}"
                                          update=":editOrderForm:orderItemsTable, :growl"/>
                     </p:column>
                     <p:column headerText="Item Name">

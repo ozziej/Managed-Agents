@@ -32,7 +32,7 @@ public class ProductsController implements Serializable
     @PostConstruct
     public void init()
     {
-        
+        //empty as we dont need to init anything yet
     }
     
     public void findAllProducts()
