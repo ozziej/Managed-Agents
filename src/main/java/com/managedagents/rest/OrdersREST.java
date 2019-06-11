@@ -90,12 +90,12 @@ public class OrdersREST {
 
         if (!order.getOrderId().equals(0)) {
             ordersBean.editOrder(order);
-            result = "Order" + order.getOrderId() + " updated.";
+            result = "Order " + order.getOrderId() + " updated.";
             resultCode = GenericResponse.ResponseCode.SUCCESSFUL;
         }
         else {
             order = ordersBean.addNewOrder(order);
-            result = "Order" + order.getOrderId() + " created.";
+            result = "Order " + order.getOrderId() + " created.";
             resultCode = GenericResponse.ResponseCode.SUCCESSFUL;
         }
 
@@ -119,9 +119,15 @@ public class OrdersREST {
         Integer orderId = order.getOrderId();
 
         if (!orderId.equals(0)) {
-            ordersBean.deleteOrder(order);
-            result = "Order " + orderId + " Deleted.";
-            resultCode = GenericResponse.ResponseCode.SUCCESSFUL;
+            order = ordersBean.deleteOrder(order);
+            if (order != null) {
+                result = "Order " + orderId + " Deleted.";
+                resultCode = GenericResponse.ResponseCode.SUCCESSFUL;
+            }
+            else {
+                result = "Error. Invalid Order.";
+                resultCode = GenericResponse.ResponseCode.ERROR;
+            }
         }
         else {
             result = "Error. Invalid Order.";

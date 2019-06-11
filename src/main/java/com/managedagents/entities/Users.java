@@ -42,8 +42,6 @@ import javax.xml.bind.annotation.XmlTransient;
             @NamedQuery(name = "Users.findBySurname", query = "SELECT u FROM Users u WHERE u.surname = :surname"),
             @NamedQuery(name = "Users.findByGender", query = "SELECT u FROM Users u WHERE u.gender = :gender"),
             @NamedQuery(name = "Users.findByEmailAddress", query = "SELECT u FROM Users u WHERE u.emailAddress = :emailAddress"),
-            @NamedQuery(name = "Users.findByCountry", query = "SELECT u FROM Users u WHERE u.country = :country"),
-            @NamedQuery(name = "Users.findByCity", query = "SELECT u FROM Users u WHERE u.city = :city"),
             @NamedQuery(name = "Users.findByPhoneNumber", query = "SELECT u FROM Users u WHERE u.phoneNumber = :phoneNumber"),
             @NamedQuery(name = "Users.findByCellNumber", query = "SELECT u FROM Users u WHERE u.cellNumber = :cellNumber"),
             @NamedQuery(name = "Users.findByUserStatus", query = "SELECT u FROM Users u WHERE u.userStatus = :userStatus")
@@ -101,21 +99,6 @@ public class Users implements Serializable {
     private String emailAddress;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 64)
-    @Column(name = "country")
-    private String country;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 64)
-    @Column(name = "city")
-    private String city;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 64)
-    @Column(name = "suburb")
-    private String suburb;
-    @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 24)
     @Column(name = "phone_number")
     private String phoneNumber;
@@ -128,8 +111,8 @@ public class Users implements Serializable {
     @NotNull
     @Lob
     @Size(min = 1, max = 65535)
-    @Column(name = "other_details")
-    private String otherDetails;
+    @Column(name = "postal_address")
+    private String postalAddress;
     @Basic(optional = false)
     @NotNull
     @Column(name = "date_of_birth")
@@ -162,10 +145,7 @@ public class Users implements Serializable {
         this.otherName = "";
         this.gender = "MALE";
         this.emailAddress = "someone@somewhere.com";
-        this.country = "South Africa";
-        this.city = "Johannesburg";
-        this.suburb = "";
-        this.otherDetails = "";
+        this.postalAddress = "South Africa";
         this.userStatus = "NEW";
         this.phoneNumber = "+27";
         this.cellNumber = "+27";
@@ -173,7 +153,7 @@ public class Users implements Serializable {
         this.dateOfBirth = Calendar.getInstance().getTime();
     }
 
-    public Users(Integer userId, String userPass, String userSalt, String title, String firstName, String surname, String otherName, String gender, String emailAddress, String country, String city, String suburb, String phoneNumber, String cellNumber, String otherDetails, Date dateOfBirth, Date firstRegistered, String userStatus) {
+    public Users(Integer userId, String userPass, String userSalt, String title, String firstName, String surname, String otherName, String gender, String emailAddress, String phoneNumber, String cellNumber, String postalAddress, Date dateOfBirth, Date firstRegistered, String userStatus) {
         this.userId = userId;
         this.userPass = userPass;
         this.userSalt = userSalt;
@@ -183,12 +163,9 @@ public class Users implements Serializable {
         this.otherName = otherName;
         this.gender = gender;
         this.emailAddress = emailAddress;
-        this.country = country;
-        this.city = city;
-        this.suburb = suburb;
         this.phoneNumber = phoneNumber;
         this.cellNumber = cellNumber;
-        this.otherDetails = otherDetails;
+        this.postalAddress = postalAddress;
         this.dateOfBirth = dateOfBirth;
         this.firstRegistered = firstRegistered;
         this.userStatus = userStatus;
@@ -266,30 +243,6 @@ public class Users implements Serializable {
         this.emailAddress = emailAddress;
     }
 
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getSuburb() {
-        return suburb;
-    }
-
-    public void setSuburb(String suburb) {
-        this.suburb = suburb;
-    }
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -306,12 +259,12 @@ public class Users implements Serializable {
         this.cellNumber = cellNumber;
     }
 
-    public String getOtherDetails() {
-        return otherDetails;
+    public String getPostalAddress() {
+        return postalAddress;
     }
 
-    public void setOtherDetails(String otherDetails) {
-        this.otherDetails = otherDetails;
+    public void setPostalAddress(String postalAddress) {
+        this.postalAddress = postalAddress;
     }
 
     public Date getDateOfBirth() {
@@ -383,7 +336,7 @@ public class Users implements Serializable {
 
     @Override
     public String toString() {
-        return "com.managedagents.entities.Users[ userId=" + userId + " ]";
+        return userId.toString();
     }
 
     @XmlTransient

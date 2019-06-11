@@ -10,5 +10,5 @@ package com.managedagents.constants;
  * @author james
  */
 public enum AppointmentStatus {
-    CREATED, ACCEPTED, DECLINED, MISSED, CANCELED;
+    CREATED, ACCEPTED, COMPLETED, EDITED, DECLINED, MISSED, CANCELED;
 }

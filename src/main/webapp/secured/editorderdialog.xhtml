@@ -13,6 +13,12 @@
             </f:facet>
             <h:form id="editOrderForm">
                 <p:panelGrid layout="grid" columns="2">
+                    <h:outputText value="Company Name:"/>
+                    <p:selectOneMenu id="selectCompany" value="#{ordersController.selectedOrder.company}" converter="#{companyConverter}">
+                        <f:selectItem noSelectionOption="true" itemLabel="Select Company to Add" itemValue="#{null}"/>
+                        <f:selectItems var="companies"  value="#{usersController.companyUsersList}"
+                                       itemValue="#{companies.company.companyId.toString()}" itemLabel="#{companies.company.companyName}"/>
+                    </p:selectOneMenu>
                     <h:outputText value="Order Date : "/>
                     <h:outputText value="#{ordersController.selectedOrder.orderDate}"/>
                     <h:outputText value="Comments : "/>

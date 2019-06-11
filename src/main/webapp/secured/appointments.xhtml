@@ -10,31 +10,49 @@
     <h:body>
         <ui:composition template="layout.xhtml">
             <ui:define name="content">
-                <h:form id="orderListForm">
-                    <p:dataTable style="margin-top:8px;font-size:14px;" id="orderDataTable" var="orderData" value="#{ordersController.orders}" rows="10"
+                <h:form id="appointmentListForm">
+                    <p:dataTable style="margin-top:8px;font-size:14px;" id="appointmentDataTable" widgetVar="appointmentDataTable" var="appointmentData" value="#{appointmentsController.appointmentsData}" rows="10"
                                  paginator="true" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-                                 rowsPerPageTemplate="5,10,15" selection="#{ordersController.selectedOrder}" selectionMode="single" widgetVar="userTable" lazy="true"
-                                 rowKey="#{orderData.orderId}" paginatorPosition="top">
-                        <p:ajax event="rowSelect" listener="#{ordersController.onRowSelect}" update=":orderListForm:editOrderButton"/>
-                        <p:ajax event="filter" listener="#{ordersController.onFilterEvent}" update=":orderListForm:editOrderButton"/>
-                        <p:ajax event="page" listener="#{ordersController.onPaginationEvent}" update=":orderListForm:editOrderButton"/>
-                        <p:column headerText="Order Id" style="text-align: center;" sortBy="#{orderData.orderId}" filterBy="#{orderData.orderId}" filterMatchMode="exact">
-                            <h:outputText value="#{orderData.orderId}"/>
+                                 rowsPerPageTemplate="5,10,15" selection="#{appointmentsController.selectedAppointment}" selectionMode="single" lazy="true"
+                                 rowKey="#{appointmentData.appointmentId}" paginatorPosition="top">
+                        <p:ajax event="rowSelect" listener="#{appointmentsController.onRowSelect}" update=":appointmentListForm:editAppointmentButton"/>
+                        <p:ajax event="filter" listener="#{appointmentsController.onFilterEvent}" update=":appointmentListForm:editAppointmentButton"/>
+                        <p:ajax event="page" listener="#{appointmentsController.onPaginationEvent}" update=":appointmentListForm:editAppointmentButton"/>
+                        <p:column headerText="Appointment Id" style="text-align: center;width:15%;" sortBy="#{appointmentData.appointmentId}" filterBy="#{appointmentData.appointmentId}" filterMatchMode="exact">
+                            <h:outputText value="#{appointmentData.appointmentId}"/>
                         </p:column>
-                        <p:column headerText="Order Date" sortBy="#{orderData.orderDate}">
-                            <h:outputText value="#{orderData.orderDate}"/>
+                        <p:column headerText="Appointment Date" sortBy="#{appointmentData.appointmentDate}">
+                            <h:outputText value="#{appointmentData.appointmentDate}">
+                                <f:convertDateTime pattern="dd MMM yyyy HH:mm"/>
+                            </h:outputText>
                         </p:column>
-                        <p:column headerText="Order Status" sortBy="#{orderData.statusType}" filterBy="=#{orderData.statusType}" filterMatchMode="exact">
-                            <h:outputText value="#{orderData.statusType}"/>
+                        <p:column headerText="Company" sortBy="#{appointmentData.company}">
+                            <h:outputText value="#{appointmentData.company.companyName}"/>
+                        </p:column>
+                        <p:column headerText="Created By" sortBy="#{appointmentData.user}">
+                            <h:outputText value="#{appointmentData.user.firstName} #{appointmentData.user.surname}"/>
+                        </p:column>
+                        <p:column headerText="Status" style="text-align: center;width:15%;" sortBy="#{appointmentData.appointmentStatus}" filterBy="#{appointmentData.appointmentStatus}" filterMatchMode="exact">
+                            <f:facet name="filter">
+                                <p:selectOneMenu onchange="PF('appointmentDataTable').filter();" converter="#{appointmentStatusConverter}">
+                                    <f:selectItem noSelectionOption="true" itemLabel="All Status" itemValue="#{null}"/>
+                                    <f:selectItems value="#{appointmentsController.appointmentStatusNames}"/>
+                                </p:selectOneMenu>
+                            </f:facet>
+                            <h:outputText value="#{appointmentData.appointmentStatus}"/>
                         </p:column>
                     </p:dataTable>
-                    <p:commandButton id="newOrderButton" value="New Order" oncomplete="PF('editOrderDialog').show()"
-                                     update=":editOrderDialog" action="#{ordersController.newOrder}"/>
-                    <p:commandButton id="editOrderButton" value="Edit Order" oncomplete="PF('editOrderDialog').show()"
-                                     disabled="#{!ordersController.orderSelectable}"
-                                     update=":editOrderDialog" action="#{ordersController.editExistingOrder}"/>
+                    <p:commandButton id="newAppointmentButton" value="New Appointment" oncomplete="PF('editAppointmentDialog').show()"
+                                     update=":editAppointmentDialog" action="#{appointmentsController.newAppointment}">
+                        <f:actionListener binding="#{appointmentsController.findUserCompanies()}"/>
+                    </p:commandButton>
+                    <p:commandButton id="editAppointmentButton" value="Edit Appointment" oncomplete="PF('editAppointmentDialog').show()"
+                                     disabled="#{appointmentsController.selectedAppointment == null}"
+                                     update=":editAppointmentDialog">
+                        <f:actionListener binding="#{appointmentsController.findUserCompanies()}"/>
+                    </p:commandButton>
                 </h:form>
-                <ui:include src="editorderdialog.xhtml"/>
+                <ui:include src="editappointmentdialog.xhtml"/>
             </ui:define>
         </ui:composition>
     </h:body>

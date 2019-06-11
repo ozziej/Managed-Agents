@@ -47,6 +47,7 @@ public class CompaniesController implements Serializable {
     private Users currentUser;
 
     private LazyDataModel<Companies> companies;
+    
     private List<CompanyUsers> companyUsersList;
     
     private List<Companies> companyList;

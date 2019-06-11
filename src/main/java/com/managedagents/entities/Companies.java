@@ -53,9 +53,6 @@ import javax.xml.bind.annotation.XmlTransient;
         })
 public class Companies implements Serializable {
 
-    @OneToMany(mappedBy = "company")
-    private Collection<Appointments> appointmentsCollection;
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -132,6 +129,8 @@ public class Companies implements Serializable {
     private List<CompanyUsers> companyUsersList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "company")
     private Collection<Orders> companyOrdersList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "company")
+    private Collection<Appointments> appointmentsCollection;
 
     public Companies() {
         this(0, "None", "011", "082", "None", "None", "None", "None", Calendar.getInstance().getTime(),

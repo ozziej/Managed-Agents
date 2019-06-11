@@ -54,18 +54,15 @@ CREATE TABLE `users` (
   `other_name` varchar(32) NOT NULL DEFAULT 'None',
   `gender` varchar(16) NOT NULL DEFAULT 'MALE',
   `email_address` varchar(128) NOT NULL DEFAULT 'none',
-  `country` varchar(64) NOT NULL DEFAULT 'None',
-  `city` varchar(64) NOT NULL DEFAULT 'None',
-  `suburb` varchar(64) NOT NULL DEFAULT 'None',
   `phone_number` varchar(24) NOT NULL DEFAULT 'None',
   `cell_number` varchar(24) NOT NULL DEFAULT 'None',
-  `other_details` text NOT NULL,
+  `postal_address` text NOT NULL,
   `date_of_birth` date NOT NULL DEFAULT '1970-01-01',
   `first_registered` datetime NOT NULL DEFAULT '2011-01-01 00:00:00',
   `user_status` varchar(16) NOT NULL DEFAULT 'NEW',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `email_address` (`email_address`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 --
 -- Table structure for table `company_users`
 --
@@ -112,7 +109,6 @@ DROP TABLE IF EXISTS `products`;
 CREATE TABLE `products` (
   `product_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `product_description` text NOT NULL,
-  `product_single_type` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `product_maximum` int(10) unsigned NOT NULL DEFAULT '0',
   `product_price` double NOT NULL DEFAULT '0',
   `product_valid_from` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -202,4 +198,17 @@ CREATE TABLE `appointments` (
   PRIMARY KEY (`appointment_id`),
   CONSTRAINT `fk_appointment_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_appointment_company_id` FOREIGN KEY (`company_id`) REFERENCES `companies` (`company_id`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE `appointment_log` (
+    `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `appointment_id` int(10) unsigned NOT NULL,
+    `user_id` int(10) unsigned DEFAULT NULL,
+    `modification_date` datetime NOT NULL DEFAULT '2011-01-01 00:00:00',
+    `appointment_date` datetime NOT NULL DEFAULT '2011-01-01 00:00:00',
+    `log_comment` text not null,
+    `appointment_status` varchar(16) not null default 'CREATED',
+    PRIMARY KEY (`log_id`),
+    CONSTRAINT `fk_appointment_log_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_appointment_log_appointment_id` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`appointment_id`) ON DELETE CASCADE ON UPDATE CASCADE    
 );

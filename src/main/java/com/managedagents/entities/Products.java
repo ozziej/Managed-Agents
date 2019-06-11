@@ -39,7 +39,6 @@ import javax.xml.bind.annotation.XmlTransient;
         {
             @NamedQuery(name = "Products.findAll", query = "SELECT p FROM Products p"),
             @NamedQuery(name = "Products.findByProductId", query = "SELECT p FROM Products p WHERE p.productId = :productId"),
-            @NamedQuery(name = "Products.findByProductSingleType", query = "SELECT p FROM Products p WHERE p.productSingleType = :productSingleType"),
             @NamedQuery(name = "Products.findByProductMaximum", query = "SELECT p FROM Products p WHERE p.productMaximum = :productMaximum"),
             @NamedQuery(name = "Products.findByProductPrice", query = "SELECT p FROM Products p WHERE p.productPrice = :productPrice"),
             @NamedQuery(name = "Products.findByProductValidFrom", query = "SELECT p FROM Products p WHERE p.productValidFrom = :productValidFrom"),
@@ -59,10 +58,6 @@ public class Products implements Serializable {
     @Size(min = 1, max = 65535)
     @Column(name = "product_description")
     private String productDescription;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "product_single_type")
-    private short productSingleType;
     @Basic(optional = false)
     @NotNull
     @Column(name = "product_maximum")
@@ -87,13 +82,12 @@ public class Products implements Serializable {
     private List<OrderItems> orderItemsList;
 
     public Products() {
-        this(0, "None", (short) 0, 0, 0, Calendar.getInstance().getTime(), Calendar.getInstance().getTime());
+        this(0, "None", (short) 0, 0, Calendar.getInstance().getTime(), Calendar.getInstance().getTime());
     }
 
-    public Products(Integer productId, String productDescription, short productSingleType, int productMaximum, double productPrice, Date productValidFrom, Date productValidUntil) {
+    public Products(Integer productId, String productDescription, int productMaximum, double productPrice, Date productValidFrom, Date productValidUntil) {
         this.productId = productId;
         this.productDescription = productDescription;
-        this.productSingleType = productSingleType;
         this.productMaximum = productMaximum;
         this.productPrice = productPrice;
         this.productValidFrom = productValidFrom;
@@ -114,14 +108,6 @@ public class Products implements Serializable {
 
     public void setProductDescription(String productDescription) {
         this.productDescription = productDescription;
-    }
-
-    public short getProductSingleType() {
-        return productSingleType;
-    }
-
-    public void setProductSingleType(short productSingleType) {
-        this.productSingleType = productSingleType;
     }
 
     public int getProductMaximum() {

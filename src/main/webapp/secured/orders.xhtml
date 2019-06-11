@@ -35,10 +35,14 @@
                         </p:column>
                     </p:dataTable>
                     <p:commandButton id="newOrderButton" value="New Order" oncomplete="PF('editOrderDialog').show()"
-                                     update=":editOrderDialog" action="#{ordersController.newOrder}"/>
+                                     update=":editOrderDialog" action="#{ordersController.newOrder}">
+                        <f:actionListener binding="#{usersController.findUserCompanies()}"/>
+                    </p:commandButton>
                     <p:commandButton id="editOrderButton" value="Edit Order" oncomplete="PF('editOrderDialog').show()"
                                      disabled="#{!ordersController.orderSelectable}"
-                                     update=":editOrderDialog" action="#{ordersController.editExistingOrder}"/>
+                                     update=":editOrderDialog" action="#{ordersController.editExistingOrder}">
+                        <f:actionListener binding="#{usersController.findUserCompanies()}"/>
+                    </p:commandButton>
                 </h:form>
                 <ui:include src="editorderdialog.xhtml"/>
             </ui:define>

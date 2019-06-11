@@ -141,20 +141,17 @@ public class Appointments implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Appointments)) {
             return false;
         }
         Appointments other = (Appointments) object;
-        if ((this.appointmentId == null && other.appointmentId != null) || (this.appointmentId != null && !this.appointmentId.equals(other.appointmentId))) {
-            return false;
-        }
-        return true;
+        return !((this.appointmentId == null && other.appointmentId != null) 
+                || (this.appointmentId != null && !this.appointmentId.equals(other.appointmentId)));
     }
 
     @Override
     public String toString() {
-        return "com.managedagents.entities.Appointments[ appointmentId=" + appointmentId + " ]";
+        return appointmentId.toString();
     }
     
 }

@@ -18,7 +18,7 @@
                         <p:ajax event="rowSelect" listener="#{companiesController.onRowSelect}" update=":companyListForm:editCompanyButton, :companyListForm:editCompanyUsersButton"/>
                         <p:ajax event="filter" listener="#{companiesController.onFilterEvent}" update=":companyListForm:editCompanyButton, :companyListForm:editCompanyUsersButton"/>
                         <p:ajax event="page" listener="#{companiesController.onPaginationEvent}" update=":companyListForm:editCompanyButton, :companyListForm:editCompanyUsersButton"/>
-                        <p:column headerText="Company ID" sortBy="#{companyData.companyId}" filterBy="#{companyData.companyId}" filterMatchMode="exact">
+                        <p:column headerText="Company ID" style="text-align: center; width: 15%;" sortBy="#{companyData.companyId}" filterBy="#{companyData.companyId}" filterMatchMode="exact">
                             <h:outputText value="#{companyData.companyId}"/>
                         </p:column>
                         <p:column headerText="Company Name" sortBy="#{companyData.companyName}" filterBy="#{companyData.companyName}" filterMatchMode="contains">
