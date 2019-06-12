@@ -1,0 +1,46 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>TODO supply a title</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>
+    <h:body>
+        <ui:composition template="layout.xhtml">
+            <ui:define name="content">
+                <h:form id="companyListForm">
+                    <p:dataTable style="margin-top:8px;font-size:14px;" id="companyDataTable" var="companyData" value="#{companiesController.companies}" rows="10"
+                                 paginator="true" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                                 rowsPerPageTemplate="5,10,15" selection="#{companiesController.selectedCompany}" selectionMode="single" widgetVar="companyTable" lazy="true"
+                                 rowKey="#{companyData.companyId}" paginatorPosition="top">
+                        <p:ajax event="rowSelect" listener="#{companiesController.onRowSelect}" update=":companyListForm:editCompanyButton, :companyListForm:editCompanyUsersButton"/>
+                        <p:ajax event="filter" listener="#{companiesController.onFilterEvent}" update=":companyListForm:editCompanyButton, :companyListForm:editCompanyUsersButton"/>
+                        <p:ajax event="page" listener="#{companiesController.onPaginationEvent}" update=":companyListForm:editCompanyButton, :companyListForm:editCompanyUsersButton"/>
+                        <p:column headerText="Company ID" style="text-align: center; width: 15%;" sortBy="#{companyData.companyId}" filterBy="#{companyData.companyId}" filterMatchMode="exact">
+                            <h:outputText value="#{companyData.companyId}"/>
+                        </p:column>
+                        <p:column headerText="Company Name" sortBy="#{companyData.companyName}" filterBy="#{companyData.companyName}" filterMatchMode="contains">
+                            <h:outputText value="#{companyData.companyName}"/>
+                        </p:column>
+                        <p:column headerText="Phone Number" sortBy="#{companyData.phoneNumber}" filterBy="#{companyData.phoneNumber}" filterMatchMode="contains">
+                            <h:outputText value="#{companyData.phoneNumber}"/>
+                        </p:column>                        
+                    </p:dataTable>
+                    <p:commandButton id="newCompanyButton" value="New Company" actionListener="#{companiesController.createNewCompany}"
+                                     oncomplete="PF('companyEditDialog').show();" update=":companyEditDialog"/>
+                    <p:commandButton id="editCompanyButton" value="Edit Company" disabled="#{companiesController.selectedCompany == null}"
+                                     oncomplete="PF('companyEditDialog').show();" update=":companyEditDialog"/>
+                    <p:commandButton id="editCompanyUsersButton" value="Edit Company Users"  disabled="#{companiesController.selectedCompany == null}"
+                                     actionListener="#{companiesController.findCompanyUsers}"
+                                     oncomplete="PF('companyUsersDialog').show();" update=":companyUsersDialog">
+                        <f:actionListener binding="#{usersController.findAllUsers()}"/>
+                    </p:commandButton>
+                </h:form>
+                <ui:include src="editcompanydialog.xhtml"/>
+                <ui:include src="editcompanyusersdialog.xhtml"/>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

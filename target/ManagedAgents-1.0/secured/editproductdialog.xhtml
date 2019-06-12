@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="productEditDialog" widgetVar="productEditDialog" modal="true" resizable="false" closable="false">
+            <f:facet name="header">
+                Edit Product Details
+            </f:facet>
+            <h:form id="productEditForm">
+                <p:panelGrid columns="2" id="userPanel" style="border: none;">
+                    <p:outputLabel value="Product Description"/>
+                    <p:inputText value="#{productsController.selectedProduct.productDescription}"/>
+                    <p:outputLabel value="Quantity Available"/>
+                    <p:inputText value="#{productsController.selectedProduct.productMaximum}"/>
+                    <p:outputLabel value="Price"/>
+                    <p:inputText value="#{productsController.selectedProduct.productPrice}"/>
+                    <p:outputLabel value="Valid From" for="productValidFrom"/>
+                    <p:calendar id="productValidFrom" value="#{productsController.selectedProduct.productValidFrom}" showOn="button" pattern="dd MMM yyyy hh:mm"/>
+                    <p:outputLabel value="Valid Until" for="productValidUntil"/>
+                    <p:calendar id="productValidUntil" value="#{productsController.selectedProduct.productValidUntil}" showOn="button" pattern="dd MMM yyyy hh:mm"/>
+                </p:panelGrid>
+                <p:commandButton value="Save" action="#{productsController.updateProduct}" oncomplete="handleSubmit(args,'productEditDialog');"
+                                 update=":productsListForm:productDataTable, :growl"/>
+                <p:commandButton value="Cancel" immediate="true" onclick="PF('productEditDialog').hide();">
+                    <p:confirm header="Confirmation" message="Are you sure you wish to cancel all changes ?" icon="pi pi-exclamation-triangle" />
+                </p:commandButton>                
+            </h:form>
+        </p:dialog>
+    </ui:composition>
+</html>

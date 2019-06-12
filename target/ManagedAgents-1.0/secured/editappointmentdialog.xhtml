@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="editAppointmentDialog" widgetVar="editAppointmentDialog" modal="true" resizable="false" closable="false">
+            <f:facet name="header">
+                Edit Appointment
+            </f:facet>
+            <h:form id="editAppointmentForm">
+                <p:panelGrid columns="2">
+                    <h:outputLabel for="selectCompany" value="Company Name:"/>
+                    <p:selectOneMenu id="selectCompany" dynamic="true" value="#{appointmentsController.selectedAppointment.company}" converter="#{companyConverter}">
+                        <f:selectItem noSelectionOption="true" itemLabel="Select Company to Add" itemValue="#{null}"/>
+                        <f:selectItems var="companies" value="#{appointmentsController.companyUsersList}"
+                                       itemValue="#{companies.company.companyId.toString()}" itemLabel="#{companies.company.companyName}"/>
+                    </p:selectOneMenu>
+                    <h:outputLabel for="selecteUser" value="User :"/>
+                    <p:selectOneMenu id="selectUser" dynamic="true" value="#{appointmentsController.selectedAppointment.user}" converter="#{usersConverter}">
+                        <f:selectItem noSelectionOption="true" itemLabel="Select User" itemValue="#{null}"/>
+                        <f:selectItems var="users" value="#{appointmentsController.otherUsersList}"
+                                       itemValue="#{users.userId.toString()}" itemLabel="#{users.emailAddress}"/>
+                    </p:selectOneMenu>
+                    <h:outputLabel for="appointmentStatus" value="Status"/>
+                    <p:selectOneMenu id="appointmentStatus" value="#{appointmentsController.selectedAppointment.appointmentStatus}">
+                        <f:selectItem itemLabel="New Appointment" itemValue="CREATED"/>
+                        <f:selectItem itemLabel="Accepted" itemValue="ACCEPTED"/>
+                        <f:selectItem itemLabel="Completed" itemValue="COMPLETED"/>
+                        <f:selectItem itemLabel="Declined" itemValue="DECLINED"/>
+                        <f:selectItem itemLabel="Missed" itemValue="MISSED"/>
+                        <f:selectItem itemLabel="Cancelled" itemValue="CANCELED"/>
+                    </p:selectOneMenu>
+                    <h:outputLabel for="startTime" value="Start Date/Time"/>
+                    <p:calendar id="startTime" value="#{appointmentsController.selectedAppointment.startTime}" showOn="button" pattern="dd MMM yyyy HH:mm"/>
+                    <h:outputLabel for="endTime" value="End Date/Time"/>
+                    <p:calendar id="endTime" value="#{appointmentsController.selectedAppointment.endTime}" showOn="button" pattern="dd MMM yyyy HH:mm"/>
+                    <h:outputLabel for="appointmentNotes" value="Notes"/>
+                    <p:inputTextarea id="appointmentNotes" rows="4" cols="60" value="#{appointmentsController.selectedAppointment.appointmentNotes}"/>
+                </p:panelGrid>
+                <p:commandButton value="Save" action="#{appointmentsController.updateAppointment}" oncomplete="handleSubmit(args, 'editAppointmentDialog');"
+                                 update=":growl,:appointmentListForm"/>
+                <p:commandButton value="Cancel" onclick="PF('editAppointmentDialog').hide()" immediate="true"
+                                 update=":growl,:appointmentListForm"/>                
+            </h:form>
+        </p:dialog>
+    </ui:composition>
+</html>

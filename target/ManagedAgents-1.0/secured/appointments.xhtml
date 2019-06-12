@@ -1,0 +1,37 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Appointment Details</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>
+    <h:body>
+        <ui:composition template="layout.xhtml">
+            <ui:define name="content">                
+                <h:form id="appointmentListForm">
+                    <p:panelGrid style="width: 800px;margin:8px 0px;">
+                        <p:row>
+                            <p:column colspan="2" style="text-align: center;">
+                                <p:selectOneMenu id="selectUser" dynamic="true" value="#{appointmentsController.selectedUser}" converter="#{usersConverter}">
+                                    <p:ajax update=":appointmentListForm"/>
+                                    <f:selectItem noSelectionOption="true" itemLabel="Select User to View" itemValue="#{null}"/>
+                                    <f:selectItems var="users" value="#{appointmentsController.otherUsersList}"
+                                                   itemValue="#{users.userId.toString()}" itemLabel="#{users.emailAddress}"/>
+                                </p:selectOneMenu>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                    <p:schedule id="appointmentSchedule" style="width: 800px;" value="#{appointmentsController.lazyAppointmentData}" widgetVar="schedule" timeZone="GMT+2">
+                        <p:ajax event="eventSelect" listener="#{appointmentsController.onEventSelect}" update=":editAppointmentDialog" oncomplete="PF('editAppointmentDialog').show()"/>
+                        <p:ajax event="dateSelect" listener="#{appointmentsController.onDateSelect}" update=":editAppointmentDialog" oncomplete="PF('editAppointmentDialog').show()"/>
+                        <p:ajax event="eventMove" listener="#{appointmentsController.onEventMove}" update=":editAppointmentDialog" oncomplete="PF('editAppointmentDialog').show()"/>
+                        <p:ajax event="eventResize" listener="#{appointmentsController.onEventResize}" update=":editAppointmentDialog" oncomplete="PF('editAppointmentDialog').show()"/>
+                    </p:schedule>
+                </h:form>
+                <ui:include src="editappointmentdialog.xhtml"/>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

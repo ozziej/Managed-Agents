@@ -1,0 +1,6 @@
+projectKey=ManagedAgents
+serverUrl=http://localhost:9000
+serverVersion=7.4.0.18908
+dashboardUrl=http://localhost:9000/dashboard?id=ManagedAgents
+ceTaskId=AWbiIxdzzn3Qbt6MLoA3
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AWbiIxdzzn3Qbt6MLoA3
