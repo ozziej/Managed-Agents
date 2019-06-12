@@ -8,6 +8,7 @@ package com.managedagents.stateless;
 import com.managedagents.entities.Appointments;
 import com.managedagents.entities.Users;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.Stateless;
@@ -16,6 +17,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.primefaces.model.SortOrder;
@@ -32,12 +34,15 @@ public class AppointmentsBean {
     @PersistenceContext(unitName = "ManagedAgentsPU")
     private EntityManager em;
     
-    public List<Appointments> findAllAppointments(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+    public List<Appointments> findAllUserAppointments(Users user, int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Appointments> cq = cb.createQuery(Appointments.class);
-
+        
         Root<Appointments> appointment = cq.from(Appointments.class);
+        Join<Appointments, Users> users = appointment.join("user");
+        
         CriteriaQuery<Appointments> select = cq.select(appointment);
+        
         if (sortField == null) {
             sortField = APPOINTMENT_ID;
         }
@@ -48,6 +53,8 @@ public class AppointmentsBean {
             cq.orderBy(cb.desc(appointment.get(sortField)));
         }
         List<Predicate> predicateList = new ArrayList<>();
+        predicateList.add(cb.equal(users, user));
+        
         filters.entrySet().forEach((filter) -> {
             predicateList.add(cb.like(appointment.get(filter.getKey()), "%" + filter.getValue().toString() + "%"));
         });
@@ -64,32 +71,51 @@ public class AppointmentsBean {
         return typedQuery.getResultList();
     }
 
-    public Long countAllAppointments(String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+    public Long countAllUserAppointments(Users user, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 
-        Root<Appointments> company = cq.from(Appointments.class);
+        Root<Appointments> appointment = cq.from(Appointments.class);
+        Join<Appointments, Users> users = appointment.join("user");
+        
         if (sortField == null) {
             sortField = APPOINTMENT_ID;
         }
         if (sortOrder.equals(SortOrder.ASCENDING)) {
-            cq.orderBy(cb.asc(company.get(sortField)));
+            cq.orderBy(cb.asc(appointment.get(sortField)));
         }
         else if (sortOrder.equals(SortOrder.DESCENDING)) {
-            cq.orderBy(cb.desc(company.get(sortField)));
+            cq.orderBy(cb.desc(appointment.get(sortField)));
         }
         List<Predicate> predicateList = new ArrayList<>();
+        predicateList.add(cb.equal(users, user));
         filters.entrySet().forEach((filter) -> {
-            predicateList.add(cb.like(company.get(filter.getKey()), "%" + filter.getValue().toString() + "%"));
+            predicateList.add(cb.like(appointment.get(filter.getKey()), "%" + filter.getValue().toString() + "%"));
         });
         Predicate[] predicateArray = predicateList.stream().toArray(Predicate[]::new);
         cq.where(predicateArray);
-        cq.select(cb.count(company));
+        cq.select(cb.count(appointment));
         return em.createQuery(cq).getSingleResult();
     }
     
     public List<Appointments> findAllAppointments(){
         TypedQuery<Appointments> query = em.createNamedQuery("Appointments.findAll", Appointments.class);
+        return query.getResultList();
+    }
+    
+    public List<Appointments> findUserAppointmentsByDate(Users user, Date startTime, Date endTime){
+        TypedQuery<Appointments> query = em.createNamedQuery("Appointments.findByUserDateBetween", Appointments.class);
+        query.setParameter("startTime", startTime);
+        query.setParameter("endTime", endTime);
+        query.setParameter("user", user);
+        return query.getResultList();
+    }
+
+    public List<Appointments> findAllUserAppointmentsByDate(Users user, Date startTime, Date endTime){
+        TypedQuery<Appointments> query = em.createNamedQuery("Appointments.findAllByUserDateBetween", Appointments.class);
+        query.setParameter("startTime", startTime);
+        query.setParameter("endTime", endTime);
+        query.setParameter("user", user);
         return query.getResultList();
     }
     

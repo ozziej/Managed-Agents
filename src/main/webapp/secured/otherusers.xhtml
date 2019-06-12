@@ -1,7 +1,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Other Users</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -22,6 +23,15 @@
                         </p:column>
                         <p:column headerText="Email Address" filterBy="#{userData.emailAddress}" filterMatchMode="contains">
                             <h:outputText value="#{userData.emailAddress}"/>
+                        </p:column>
+                        <p:column headerText="User Status" sortBy="#{userData.userStatus}" filterBy="#{userData.userStatus}" filterMatchMode="exact">
+                            <f:facet name="filter">
+                                <p:selectOneMenu onchange="PF('userTable').filter();" converter="#{usersStatusConverter}">
+                                    <f:selectItem noSelectionOption="true" itemLabel="All Status" itemValue="#{null}"/>
+                                    <f:selectItems var="status" value="#{usersController.userStatusTypes}"/>
+                                </p:selectOneMenu>
+                            </f:facet>
+                            <h:outputText value="#{userData.userStatus}"/>
                         </p:column>
                     </p:dataTable>
                     <p:commandButton id="editSelectedUser" value="Edit Selected User" disabled="#{usersController.selectedUser == null}" oncomplete="PF('usersEditDialog').show()"

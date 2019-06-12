@@ -22,25 +22,33 @@
                         <f:selectItem itemValue="Miss." itemLabel="Miss."/>
                         <f:selectItem itemValue="Prof." itemLabel="Prof."/>
                     </p:selectOneMenu>
-                    <p:outputLabel value="First Name"/>
-                    <p:inputText value="#{usersController.selectedUser.firstName}"/>
-                    <p:outputLabel value="Surname"/>
-                    <p:inputText value="#{usersController.selectedUser.surname}"/>
-                    <p:outputLabel value="Other Name"/>
-                    <p:inputText value="#{usersController.selectedUser.otherName}"/>
                     <p:outputLabel value="Gender"/>
                     <p:selectOneMenu id="gender" value="#{usersController.selectedUser.gender}">
                         <f:selectItem itemValue="MALE" itemLabel="Male"/>
                         <f:selectItem itemValue="FEMALE" itemLabel="Female"/>
                     </p:selectOneMenu>
-                    <p:outputLabel value="Email Address"/>
-                    <p:inputText id="emailAddress" value="#{usersController.selectedUser.emailAddress}"/>
+                    <p:outputLabel value="First Name"/>
+                    <p:inputText value="#{usersController.selectedUser.firstName}"/>
                     <p:outputLabel value="Cell Number"/>
                     <p:inputText id="cellNumber" value="#{usersController.selectedUser.cellNumber}"/>
+                    <p:outputLabel value="Surname"/>
+                    <p:inputText value="#{usersController.selectedUser.surname}"/>
                     <p:outputLabel value="Phone Number"/>
                     <p:inputText id="phoneNumber" value="#{usersController.selectedUser.phoneNumber}"/>
+                    <p:outputLabel value="Other Name"/>
+                    <p:inputText value="#{usersController.selectedUser.otherName}"/>
+                    <p:outputLabel value="Email Address"/>
+                    <p:inputText id="emailAddress" value="#{usersController.selectedUser.emailAddress}"/>
                     <p:outputLabel value="Date of Birth"/>
                     <p:calendar id="dateOfBirth" value="#{usersController.selectedUser.dateOfBirth}"/>
+                    <p:outputLabel value="Date Registered"/>
+                    <h:outputText value="#{usersController.selectedUser.firstRegistered}">
+                        <f:convertDateTime pattern="dd MMM yyyy hh:mm"/>
+                    </h:outputText>
+                    <p:outputLabel value="User Status"/>
+                    <p:selectOneMenu value="#{usersController.selectedUser.userStatus}" disabled="#{!loginBean.adminUser}">
+                        <f:selectItems var="status" value="#{usersController.userStatusTypes}"/>
+                    </p:selectOneMenu>
                     <p:outputLabel value="Postal Address"/>
                     <p:inputTextarea id="postalAddress" value="#{usersController.selectedUser.postalAddress}" rows="4" cols="20"/>
                 </p:panelGrid>

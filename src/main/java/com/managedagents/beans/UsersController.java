@@ -6,6 +6,7 @@
 package com.managedagents.beans;
 
 import com.managedagents.constants.DefaultMessages;
+import com.managedagents.constants.UsersStatus;
 import com.managedagents.entities.Companies;
 import com.managedagents.entities.CompanyUsers;
 import com.managedagents.entities.Users;
@@ -66,22 +67,24 @@ public class UsersController implements Serializable {
 
     private String buttonUpdate;
 
+    private final List<String> userStatusList = new ArrayList<>();
+    
     private static final long serialVersionUID = 1L;
 
     @PostConstruct
     public void init() {
         currentUser = loginBean.getCurrentUser();
-
+        findUserStatusTypes();
         if (FacesContext.getCurrentInstance().getViewRoot().getViewId().contains("otherusers")) {
             selectedUser = null;
-            updateElements = ":userListForm:userDataTable, :growl";
+            updateElements = ":userListForm:userDataTable,:usersEditForm :growl";
             buttonUpdate = ":userListForm:editSelectedUser, :userListForm:editUserPassword, :userListForm:editUserCompanies";
             getUserList();
         }
         else {
             selectedUser = currentUser;
             buttonUpdate = "";
-            updateElements = ":myDetailsForm, :growl";
+            updateElements = ":myDetailsForm,:usersEditForm :growl";
         }
     }
 
@@ -301,6 +304,12 @@ public class UsersController implements Serializable {
         return randomPassword;
     }
 
+    private void findUserStatusTypes() {
+        for (UsersStatus s : UsersStatus.values()) {
+            userStatusList.add(s.toString());
+        }
+    }
+
     public String getUserPassword() {
         return userPassword;
     }
@@ -353,4 +362,7 @@ public class UsersController implements Serializable {
         this.selectedCompany = selectedCompany;
     }
 
+    public List<String> getUserStatusTypes() {
+        return userStatusList;
+    }
 }

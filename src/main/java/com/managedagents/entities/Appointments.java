@@ -38,7 +38,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Appointments.findAll", query = "SELECT a FROM Appointments a"),
     @NamedQuery(name = "Appointments.findByAppointmentId", query = "SELECT a FROM Appointments a WHERE a.appointmentId = :appointmentId"),
     @NamedQuery(name = "Appointments.findByUser", query = "SELECT a FROM Appointments a WHERE a.user = :user"),
-    @NamedQuery(name = "Appointments.findByAppointmentDate", query = "SELECT a FROM Appointments a WHERE a.appointmentDate = :appointmentDate"),
+    @NamedQuery(name = "Appointments.findAllByUserDateBetween", query = "SELECT a FROM Appointments a WHERE (a.startTime BETWEEN :startTime and :endTime)"
+            + " and (a.endTime BETWEEN :startTime and :endTime) and (a.user = :user or :user IS NULL)"),
+    @NamedQuery(name = "Appointments.findByUserDateBetween", query = "SELECT a FROM Appointments a WHERE (a.startTime BETWEEN :startTime and :endTime)"
+            + " and (a.endTime BETWEEN :startTime and :endTime) and (a.user = :user)"),
     @NamedQuery(name = "Appointments.findByAppointmentStatus", query = "SELECT a FROM Appointments a WHERE a.appointmentStatus = :appointmentStatus")})
 public class Appointments implements Serializable {
 
@@ -50,9 +53,14 @@ public class Appointments implements Serializable {
     private Integer appointmentId;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "appointment_date")
+    @Column(name = "start_time")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date appointmentDate;
+    private Date startTime;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "end_time")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date endTime;
     @Basic(optional = false)
     @NotNull
     @Lob
@@ -79,7 +87,8 @@ public class Appointments implements Serializable {
         this.appointmentId = 0;
         this.company = company;
         this.user = user;
-        this.appointmentDate = today;
+        this.startTime = today;
+        this.endTime = today;
         this.appointmentNotes = "None";
         this.appointmentStatus = AppointmentStatus.CREATED.name();
     }
@@ -92,13 +101,22 @@ public class Appointments implements Serializable {
         this.appointmentId = appointmentId;
     }
 
-    public Date getAppointmentDate() {
-        return appointmentDate;
+    public Date getStartTime() {
+        return startTime;
     }
 
-    public void setAppointmentDate(Date appointmentDate) {
-        this.appointmentDate = appointmentDate;
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
     }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
 
     public String getAppointmentNotes() {
         return appointmentNotes;

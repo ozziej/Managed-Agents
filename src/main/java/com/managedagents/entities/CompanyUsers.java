@@ -32,6 +32,8 @@ import javax.xml.bind.annotation.XmlRootElement;
         {
             @NamedQuery(name = "CompanyUsers.findAll", query = "SELECT c FROM CompanyUsers c"),
             @NamedQuery(name = "CompanyUsers.findByUser", query = "SELECT c FROM CompanyUsers c LEFT JOIN FETCH c.company WHERE c.user = :user"),
+            @NamedQuery(name = "CompanyUsers.findOtherByUser", query = "SELECT c FROM CompanyUsers c LEFT JOIN FETCH c.user WHERE c.company IN "
+                    + "(SELECT DISTINCT cu.company from CompanyUsers cu WHERE cu.user = :user)"),
             @NamedQuery(name = "CompanyUsers.findByCompany", query = "SELECT c FROM CompanyUsers c LEFT JOIN FETCH c.user WHERE c.company = :company"),
         })
 public class CompanyUsers implements Serializable {

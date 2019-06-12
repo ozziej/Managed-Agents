@@ -21,11 +21,11 @@
             <h:form>
                 <p:menubar>
                     <p:menuitem value="User Details" url="mydetails.xhtml"/>
-                    <p:menuitem value="Other Users" url="otherusers.xhtml"/>
+                    <p:menuitem value="Other Users" url="otherusers.xhtml" rendered="#{loginBean.adminUser}"/>
                     <p:menuitem value="Appointments" url="appointments.xhtml"/>
-                    <p:menuitem value="Companies" url="companies.xhtml"/>
+                    <p:menuitem value="Companies" url="companies.xhtml" rendered="#{loginBean.adminUser}"/>
                     <p:menuitem value="Orders" url="orders.xhtml"/>
-                    <p:menuitem value="Products" url="products.xhtml"/>
+                    <p:menuitem value="Products" url="products.xhtml" rendered="#{loginBean.adminUser}"/>
                     <f:facet name="options">
                         <p:outputLabel value="#{loginBean.currentUser.emailAddress}"/>
                         <p:commandButton value="Logout" icon="pi pi-sign-out" action="#{loginBean.logoutUser()}" />

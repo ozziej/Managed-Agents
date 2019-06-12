@@ -6,6 +6,7 @@
 package com.managedagents.beans;
 
 import com.managedagents.constants.DefaultMessages;
+import com.managedagents.constants.UsersStatus;
 import com.managedagents.entities.Users;
 import com.managedagents.stateless.PasswordManager;
 import com.managedagents.stateless.UsersBean;
@@ -124,4 +125,7 @@ public class LoginBean implements Serializable
         this.password = password;
     }
     
+    public boolean isAdminUser(){
+        return currentUser.getUserStatus().equals(UsersStatus.ADMIN.toString());
+    }
 }

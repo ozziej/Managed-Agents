@@ -74,6 +74,14 @@ public class OrdersController implements Serializable {
             private static final long serialVersionUID = 1L;
 
             @Override
+            public List<Orders> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+                List<Orders> orderList = ordersBean.findAllUserOrders(currentUser, first, pageSize, sortField, sortOrder, filters);
+                Long rowCount = ordersBean.countAllUserOrders(currentUser, sortField, sortOrder, filters);
+                orders.setRowCount(rowCount.intValue());
+                return orderList;
+            }
+
+            @Override
             public Orders getRowData(String rowKey) {
                 for (Orders order : orders.getWrappedData()) {
                     if (order.getOrderId().equals(Integer.parseInt(rowKey))) {
@@ -81,14 +89,6 @@ public class OrdersController implements Serializable {
                     }
                 }
                 return null;
-            }
-
-            @Override
-            public List<Orders> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
-                List<Orders> orderList = ordersBean.findAllOrders(first, pageSize, sortField, sortOrder, filters);
-                Long rowCount = ordersBean.countAllOrders(sortField, sortOrder, filters);
-                orders.setRowCount(rowCount.intValue());
-                return orderList;
             }
         };
     }

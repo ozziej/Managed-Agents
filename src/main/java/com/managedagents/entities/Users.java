@@ -44,6 +44,8 @@ import javax.xml.bind.annotation.XmlTransient;
             @NamedQuery(name = "Users.findByEmailAddress", query = "SELECT u FROM Users u WHERE u.emailAddress = :emailAddress"),
             @NamedQuery(name = "Users.findByPhoneNumber", query = "SELECT u FROM Users u WHERE u.phoneNumber = :phoneNumber"),
             @NamedQuery(name = "Users.findByCellNumber", query = "SELECT u FROM Users u WHERE u.cellNumber = :cellNumber"),
+            @NamedQuery(name = "Users.findOtherByUser", query = "SELECT DISTINCT c.user FROM CompanyUsers c LEFT JOIN FETCH c.user WHERE c.company IN "
+                    + "(SELECT cu.company from CompanyUsers cu WHERE cu.user = :user)"),
             @NamedQuery(name = "Users.findByUserStatus", query = "SELECT u FROM Users u WHERE u.userStatus = :userStatus")
         })
 public class Users implements Serializable {

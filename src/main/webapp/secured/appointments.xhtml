@@ -9,48 +9,26 @@
     </h:head>
     <h:body>
         <ui:composition template="layout.xhtml">
-            <ui:define name="content">
+            <ui:define name="content">                
                 <h:form id="appointmentListForm">
-                    <p:dataTable style="margin-top:8px;font-size:14px;" id="appointmentDataTable" widgetVar="appointmentDataTable" var="appointmentData" value="#{appointmentsController.appointmentsData}" rows="10"
-                                 paginator="true" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-                                 rowsPerPageTemplate="5,10,15" selection="#{appointmentsController.selectedAppointment}" selectionMode="single" lazy="true"
-                                 rowKey="#{appointmentData.appointmentId}" paginatorPosition="top">
-                        <p:ajax event="rowSelect" listener="#{appointmentsController.onRowSelect}" update=":appointmentListForm:editAppointmentButton"/>
-                        <p:ajax event="filter" listener="#{appointmentsController.onFilterEvent}" update=":appointmentListForm:editAppointmentButton"/>
-                        <p:ajax event="page" listener="#{appointmentsController.onPaginationEvent}" update=":appointmentListForm:editAppointmentButton"/>
-                        <p:column headerText="Appointment Id" style="text-align: center;width:15%;" sortBy="#{appointmentData.appointmentId}" filterBy="#{appointmentData.appointmentId}" filterMatchMode="exact">
-                            <h:outputText value="#{appointmentData.appointmentId}"/>
-                        </p:column>
-                        <p:column headerText="Appointment Date" sortBy="#{appointmentData.appointmentDate}">
-                            <h:outputText value="#{appointmentData.appointmentDate}">
-                                <f:convertDateTime pattern="dd MMM yyyy HH:mm"/>
-                            </h:outputText>
-                        </p:column>
-                        <p:column headerText="Company" sortBy="#{appointmentData.company}">
-                            <h:outputText value="#{appointmentData.company.companyName}"/>
-                        </p:column>
-                        <p:column headerText="Created By" sortBy="#{appointmentData.user}">
-                            <h:outputText value="#{appointmentData.user.firstName} #{appointmentData.user.surname}"/>
-                        </p:column>
-                        <p:column headerText="Status" style="text-align: center;width:15%;" sortBy="#{appointmentData.appointmentStatus}" filterBy="#{appointmentData.appointmentStatus}" filterMatchMode="exact">
-                            <f:facet name="filter">
-                                <p:selectOneMenu onchange="PF('appointmentDataTable').filter();" converter="#{appointmentStatusConverter}">
-                                    <f:selectItem noSelectionOption="true" itemLabel="All Status" itemValue="#{null}"/>
-                                    <f:selectItems value="#{appointmentsController.appointmentStatusNames}"/>
+                    <p:panelGrid style="width: 800px;margin:8px 0px;">
+                        <p:row>
+                            <p:column colspan="2" style="text-align: center;">
+                                <p:selectOneMenu id="selectUser" dynamic="true" value="#{appointmentsController.selectedUser}" converter="#{usersConverter}">
+                                    <p:ajax update=":appointmentListForm"/>
+                                    <f:selectItem noSelectionOption="true" itemLabel="Select User to View" itemValue="#{null}"/>
+                                    <f:selectItems var="users" value="#{appointmentsController.otherUsersList}"
+                                                   itemValue="#{users.userId.toString()}" itemLabel="#{users.emailAddress}"/>
                                 </p:selectOneMenu>
-                            </f:facet>
-                            <h:outputText value="#{appointmentData.appointmentStatus}"/>
-                        </p:column>
-                    </p:dataTable>
-                    <p:commandButton id="newAppointmentButton" value="New Appointment" oncomplete="PF('editAppointmentDialog').show()"
-                                     update=":editAppointmentDialog" action="#{appointmentsController.newAppointment}">
-                        <f:actionListener binding="#{appointmentsController.findUserCompanies()}"/>
-                    </p:commandButton>
-                    <p:commandButton id="editAppointmentButton" value="Edit Appointment" oncomplete="PF('editAppointmentDialog').show()"
-                                     disabled="#{appointmentsController.selectedAppointment == null}"
-                                     update=":editAppointmentDialog">
-                        <f:actionListener binding="#{appointmentsController.findUserCompanies()}"/>
-                    </p:commandButton>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                    <p:schedule id="appointmentSchedule" style="width: 800px;" value="#{appointmentsController.lazyAppointmentData}" widgetVar="schedule" timeZone="GMT+2">
+                        <p:ajax event="eventSelect" listener="#{appointmentsController.onEventSelect}" update=":editAppointmentDialog" oncomplete="PF('editAppointmentDialog').show()"/>
+                        <p:ajax event="dateSelect" listener="#{appointmentsController.onDateSelect}" update=":editAppointmentDialog" oncomplete="PF('editAppointmentDialog').show()"/>
+                        <p:ajax event="eventMove" listener="#{appointmentsController.onEventMove}" update=":editAppointmentDialog" oncomplete="PF('editAppointmentDialog').show()"/>
+                        <p:ajax event="eventResize" listener="#{appointmentsController.onEventResize}" update=":editAppointmentDialog" oncomplete="PF('editAppointmentDialog').show()"/>
+                    </p:schedule>
                 </h:form>
                 <ui:include src="editappointmentdialog.xhtml"/>
             </ui:define>

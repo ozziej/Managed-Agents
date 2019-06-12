@@ -43,13 +43,18 @@ public class UsersBean {
         query.setParameter("company", company);
         return query.getResultList();
     }
-    
+
     public List<CompanyUsers> findUserCompanies(Users user) {
         TypedQuery<CompanyUsers> query = em.createNamedQuery("CompanyUsers.findByUser", CompanyUsers.class);
         query.setParameter("user", user);
         return query.getResultList();
     }
-    
+
+    public List<Users> findOtherUsers(Users user) {
+        TypedQuery<Users> query = em.createNamedQuery("Users.findOtherByUser", Users.class);
+        query.setParameter("user", user);
+        return query.getResultList();
+    }
 
     public Users findUserByUserId(Integer userId) {
         TypedQuery<Users> query = em.createNamedQuery("Users.findByUserId", Users.class);
