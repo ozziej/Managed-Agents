@@ -5,21 +5,18 @@
  */
 package com.managedagents.rest;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.managedagents.entities.Appointments;
+import com.managedagents.entities.AppointmentsRequest;
+import com.managedagents.entities.GenericResponse;
 import com.managedagents.entities.Users;
 import com.managedagents.stateless.AppointmentsBean;
 import com.managedagents.stateless.UsersBean;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -30,42 +27,63 @@ import javax.ws.rs.core.MediaType;
  * @author james
  */
 @Stateless
-@Path("appointment")
+@Path("appointments")
 public class AppointmentsREST {
-    
+
     @Inject
     private AppointmentsBean appointmentsBean;
-    
+
     @Inject
     private UsersBean usersBean;
-    
+
     @POST
     @Path("/appointmentsList")
-    @Produces({MediaType.APPLICATION_JSON})
-    public List<Appointments> getUserAppointments(String jsonString) {
-        Integer userId;
-        Users user = null;
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> map = new HashMap<>();
-        
-        try {
-            map = mapper.readValue(jsonString, new TypeReference<Map<String, Object>>() {
-            });
-        }
-        catch (IOException ex) {
-            Logger.getLogger(UsersREST.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        userId = (Integer) map.getOrDefault("userId", 0);
-        if (userId > 0) {
-            user = usersBean.findUserByUserId(userId);
-        }
+    @Consumes({
+        MediaType.APPLICATION_JSON
+    })
+    @Produces({
+        MediaType.APPLICATION_JSON
+    })
+    public List<Appointments> getUserAppointments(AppointmentsRequest request) {
+        Users user = request.getUser();
+        long startTime = request.getStartTime();
+        long endTime = request.getEndTime();
         
         if (user != null) {
-            return appointmentsBean.findUserAppointments(user);
+            Date startDateTime = new Date(startTime);
+            Date endDateTime = new Date(endTime);
+            System.out.println("DATE:"+startDateTime.toString());
+            System.out.println("DATE:"+endDateTime.toString());
+            return appointmentsBean.findUserAppointmentsByDate(user, startDateTime, endDateTime);
         }
         else {
             return new ArrayList<>();
         }
+    }
+
+    @POST
+    @Consumes({
+        MediaType.APPLICATION_JSON
+    })
+    @Produces({
+        MediaType.APPLICATION_JSON
+    })
+    @Path("/updateAppointment")
+    public GenericResponse updateAppointment(Appointments appointments) {
+        String result;
+        GenericResponse.ResponseCode resultCode;
+
+        if (appointments.getAppointmentId().equals(0)) {
+            appointmentsBean.addNewAppointment(appointments);
+            result = "New appointment with " + appointments.getCompany().getCompanyName() + " was added.";
+            resultCode = GenericResponse.ResponseCode.SUCCESSFUL;
+        }
+        else {
+            result = "Appointment with " + appointments.getCompany().getCompanyName() + " was updated.";
+            appointmentsBean.editAppointment(appointments);
+            resultCode = GenericResponse.ResponseCode.SUCCESSFUL;
+        }
+
+        return new GenericResponse(resultCode, result);
     }
 }
