@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
         {
             @NamedQuery(name = "ProductImages.findAll", query = "SELECT p FROM ProductImages p"),
             @NamedQuery(name = "ProductImages.findByProductImageId", query = "SELECT p FROM ProductImages p WHERE p.productImageId = :productImageId"),
-            @NamedQuery(name = "ProductImages.findByImageDescription", query = "SELECT p FROM ProductImages p WHERE p.imageDescription = :imageDescription")
+            @NamedQuery(name = "ProductImages.findByProduct", query = "SELECT p FROM ProductImages p WHERE p.product = :product")
         })
 public class ProductImages implements Serializable {
 
@@ -58,16 +58,17 @@ public class ProductImages implements Serializable {
     @JsonIgnore
     @JoinColumn(name = "product_id", referencedColumnName = "product_id")
     @ManyToOne(optional = false)
-    private Products productId;
+    private Products product;
 
     public ProductImages() {
-        this(0, "None", "None");
+        this("None", "None", null);
     }
 
-    public ProductImages(Integer productImageId, String imageDescription, String imageUri) {
-        this.productImageId = productImageId;
+    public ProductImages(String imageDescription, String imageUri, Products product) {
+        this.productImageId = 0;
         this.imageDescription = imageDescription;
         this.imageUri = imageUri;
+        this.product = product;
     }
 
     public Integer getProductImageId() {
@@ -94,12 +95,12 @@ public class ProductImages implements Serializable {
         this.imageUri = imageUri;
     }
 
-    public Products getProductId() {
-        return productId;
+    public Products getProduct() {
+        return product; 
     }
 
-    public void setProductId(Products productId) {
-        this.productId = productId;
+    public void setProductId(Products product) {
+        this.product = product;
     }
 
     @Override

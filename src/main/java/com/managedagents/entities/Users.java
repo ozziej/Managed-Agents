@@ -130,11 +130,11 @@ public class Users implements Serializable {
     @Size(min = 1, max = 16)
     @Column(name = "user_status")
     private String userStatus;
-    @OneToMany(mappedBy = "editingUser")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
     private Collection<Orders> ordersList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
     private Collection<CompanyUsers> companyUsersList;
-    @OneToMany(mappedBy = "userId")
+    @OneToMany(mappedBy = "user")
     private Collection<OrderItems> orderItemsList;
 
     public Users() {

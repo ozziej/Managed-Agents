@@ -13,7 +13,7 @@
                 <h:form id="orderListForm">
                     <p:dataTable style="margin-top:8px;font-size:14px;" id="orderDataTable" var="orderData" value="#{ordersController.orders}" rows="10"
                                  paginator="true" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-                                 rowsPerPageTemplate="5,10,15" selection="#{ordersController.selectedOrder}" selectionMode="single" widgetVar="userTable" lazy="true"
+                                 rowsPerPageTemplate="5,10,15" selection="#{ordersController.selectedOrder}" selectionMode="single" widgetVar="ordersTable" lazy="true"
                                  rowKey="#{orderData.orderId}" paginatorPosition="top">
                         <p:ajax event="rowSelect" listener="#{ordersController.onRowSelect}" update=":orderListForm:editOrderButton"/>
                         <p:ajax event="filter" listener="#{ordersController.onFilterEvent}" update=":orderListForm:editOrderButton"/>
@@ -21,7 +21,13 @@
                         <p:column headerText="Order Id" style="text-align: center;" sortBy="#{orderData.orderId}" filterBy="#{orderData.orderId}" filterMatchMode="exact">
                             <h:outputText value="#{orderData.orderId}"/>
                         </p:column>
-                        <p:column headerText="Created By" style="text-align: center;" sortBy="#{orderData.user}">
+                        <p:column headerText="Created By" style="text-align: center;" sortBy="#{orderData.user}" filterBy="#{orderData.user}" filterMatchMode="exact">
+                            <f:facet name="filter">
+                                <p:selectOneMenu onchange="PF('ordersTable').filter()" style="width:80%;font-size:12px;">
+                                    <f:selectItem itemLabel="All Users" itemValue="#{null}" noSelectionOption="true"/>
+                                    <f:selectItems var="users" value="#{ordersController.otherUsersList}" itemLabel="#{users.firstName} #{users.surname}"/>
+                                </p:selectOneMenu>
+                            </f:facet>
                             <h:outputText value="#{orderData.user.firstName} #{orderData.user.surname}"/>
                         </p:column>
                         <p:column headerText="Company Name" style="text-align: center;" sortBy="#{orderData.company}">
@@ -30,7 +36,13 @@
                         <p:column headerText="Order Date" sortBy="#{orderData.orderDate}">
                             <h:outputText value="#{orderData.orderDate}"/>
                         </p:column>
-                        <p:column headerText="Order Status" sortBy="#{orderData.statusType}" filterBy="=#{orderData.statusType}" filterMatchMode="exact">
+                        <p:column headerText="Order Status" sortBy="#{orderData.statusType}" filterBy="#{orderData.statusType}" filterMatchMode="exact">
+                            <f:facet name="filter">
+                                <p:selectOneMenu onchange="PF('ordersTable').filter()" style="width:80%;font-size:12px;" converter="#{orderStatusConverter}">
+                                    <f:selectItem itemLabel="All Status" itemValue="#{null}" noSelectionOption="true"/>
+                                    <f:selectItems var="status" value="#{ordersController.orderStatusTypes}"/>
+                                </p:selectOneMenu>
+                            </f:facet>
                             <h:outputText value="#{orderData.statusType}"/>
                         </p:column>
                     </p:dataTable>

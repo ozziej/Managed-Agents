@@ -13,6 +13,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -76,7 +77,7 @@ public class Products implements Serializable {
     @Column(name = "product_valid_until")
     @Temporal(TemporalType.TIMESTAMP)
     private Date productValidUntil;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "productId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<ProductImages> productImagesList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private List<OrderItems> orderItemsList;

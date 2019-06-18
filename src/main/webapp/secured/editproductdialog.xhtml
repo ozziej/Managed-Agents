@@ -7,23 +7,47 @@
       xmlns:p="http://primefaces.org/ui">
 
     <ui:composition>
-        <p:dialog id="productEditDialog" widgetVar="productEditDialog" modal="true" resizable="false" closable="false">
+        <p:dialog id="productEditDialog" widgetVar="productEditDialog" modal="true" resizable="false" closable="false" width="800">
             <f:facet name="header">
                 Edit Product Details
             </f:facet>
             <h:form id="productEditForm">
-                <p:panelGrid columns="2" id="userPanel" style="border: none;">
-                    <p:outputLabel value="Product Description"/>
-                    <p:inputText value="#{productsController.selectedProduct.productDescription}"/>
-                    <p:outputLabel value="Quantity Available"/>
-                    <p:inputText value="#{productsController.selectedProduct.productMaximum}"/>
-                    <p:outputLabel value="Price"/>
-                    <p:inputText value="#{productsController.selectedProduct.productPrice}"/>
-                    <p:outputLabel value="Valid From" for="productValidFrom"/>
-                    <p:calendar id="productValidFrom" value="#{productsController.selectedProduct.productValidFrom}" showOn="button" pattern="dd MMM yyyy hh:mm"/>
-                    <p:outputLabel value="Valid Until" for="productValidUntil"/>
-                    <p:calendar id="productValidUntil" value="#{productsController.selectedProduct.productValidUntil}" showOn="button" pattern="dd MMM yyyy hh:mm"/>
-                </p:panelGrid>
+                <p:tabView id="productTabView">
+                    <p:tab id="genera0l" title="General Info">
+                        <p:panelGrid columns="2" id="userPanel" style="border: none;width: 100%;">
+                            <p:outputLabel value="Product Description"/>
+                            <p:inputText value="#{productsController.selectedProduct.productDescription}"/>
+                            <p:outputLabel value="Quantity Available"/>
+                            <p:inputText value="#{productsController.selectedProduct.productMaximum}"/>
+                            <p:outputLabel value="Price"/>
+                            <p:inputText value="#{productsController.selectedProduct.productPrice}"/>
+                            <p:outputLabel value="Valid From" for="productValidFrom"/>
+                            <p:calendar id="productValidFrom" value="#{productsController.selectedProduct.productValidFrom}" showOn="button" pattern="dd MMM yyyy hh:mm"/>
+                            <p:outputLabel value="Valid Until" for="productValidUntil"/>
+                            <p:calendar id="productValidUntil" value="#{productsController.selectedProduct.productValidUntil}" showOn="button" pattern="dd MMM yyyy hh:mm"/>
+                        </p:panelGrid>
+                    </p:tab>
+                    <p:tab id="images" title="Images">
+                        <p:dataGrid id="productImages" var="productImages" value="#{productsController.imagesList}" columns="4" layout="grid" paginator="true">
+                            <p:panel header="File" style="text-align: center;">
+                                <h:panelGrid columns="1" style="width: 100%;text-align: center;">
+                                    <p:graphicImage value="/ImageServlet/products/#{productsController.selectedProduct.productId}/#{productImages.imageUri}.jpg" style="max-height: 80px;max-width: 120px;"/>
+                                    <h:outputText value="#{productImages.product.productDescription}"/>
+                                    <p:commandButton value="Delete" icon="pi pi-trash" update="growl,productImages" action="#{productsController.deleteImage}">
+                                        <f:setPropertyActionListener value="#{productImages}" target="#{productsController.selectedProductImage}"/>
+                                        <p:confirm header="Confirmation" message="Are you sure you wish to remove this?" icon="pi pi-exclamation-triangle" />
+                                    </p:commandButton>
+                                    <p:commandButton value="Download" icon="pi pi-cloud-download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+                                        <f:setPropertyActionListener value="#{productImages}" target="#{productsController.selectedProductImage}"/>
+                                        <p:fileDownload value="#{productsController.downloadFile}"/>
+                                    </p:commandButton>
+                                </h:panelGrid>
+                            </p:panel>
+                        </p:dataGrid>
+                        <p:fileUpload id="fileUpload" mode="advanced" fileUploadListener="#{productsController.handleUploadFile}" update="growl,productImages"
+                                      disabled="#{productsController.selectedProduct.productId == 0}"/>
+                    </p:tab>
+                </p:tabView>
                 <p:commandButton value="Save" action="#{productsController.updateProduct}" oncomplete="handleSubmit(args,'productEditDialog');"
                                  update=":productsListForm:productDataTable, :growl"/>
                 <p:commandButton value="Cancel" immediate="true" onclick="PF('productEditDialog').hide();">

@@ -67,14 +67,11 @@ public class UsersController implements Serializable {
 
     private String buttonUpdate;
 
-    private final List<String> userStatusList = new ArrayList<>();
-    
     private static final long serialVersionUID = 1L;
 
     @PostConstruct
     public void init() {
         currentUser = loginBean.getCurrentUser();
-        findUserStatusTypes();
         if (FacesContext.getCurrentInstance().getViewRoot().getViewId().contains("otherusers")) {
             selectedUser = null;
             updateElements = ":userListForm:userDataTable,:usersEditForm :growl";
@@ -304,12 +301,6 @@ public class UsersController implements Serializable {
         return randomPassword;
     }
 
-    private void findUserStatusTypes() {
-        for (UsersStatus s : UsersStatus.values()) {
-            userStatusList.add(s.toString());
-        }
-    }
-
     public String getUserPassword() {
         return userPassword;
     }
@@ -363,6 +354,10 @@ public class UsersController implements Serializable {
     }
 
     public List<String> getUserStatusTypes() {
+        List<String> userStatusList = new ArrayList<>();
+        for (UsersStatus s : UsersStatus.values()) {
+            userStatusList.add(s.toString());
+        }
         return userStatusList;
     }
 }

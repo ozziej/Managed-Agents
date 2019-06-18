@@ -17,6 +17,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.primefaces.model.SortOrder;
@@ -55,12 +56,12 @@ public class OrdersBean {
         }
     }
 
-    public Long countAllUserOrders(Users user, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+    public Long countAllUserOrders(List<Users> userList, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<Orders> order = cq.from(Orders.class);
         Join<Orders, Users> users = order.join("user");
-        
+
         if (sortField == null) {
             sortField = ORDER_ID;
         }
@@ -71,34 +72,41 @@ public class OrdersBean {
         else if (sortOrder.equals(SortOrder.DESCENDING)) {
             cq.orderBy(cb.desc(order.get(sortField)));
         }
-        
+
         List<Predicate> predicateList = new ArrayList<>();
-        predicateList.add(cb.equal(users, user));
-        
+
+        predicateList.add(users.in(userList));
+
         filters.entrySet().forEach((filter) -> {
-            if (filter.getKey().equals("orderStatus") || filter.getKey().equals(ORDER_ID)) {
-                predicateList.add(cb.equal(order.get(filter.getKey()), filter.getValue().toString()));
-            }
-            else {
-                predicateList.add(cb.like(order.get(filter.getKey()), "%" + filter.getValue().toString() + "%"));
+            switch (filter.getKey()) {
+                case "orderStatus":
+                case ORDER_ID:
+                    predicateList.add(cb.equal(order.get(filter.getKey()), filter.getValue().toString()));
+                    break;
+                case "user":
+                    predicateList.add(cb.equal(users.get("userId"), filter.getValue().toString()));
+                    break;
+                default:
+                    predicateList.add(cb.like(order.get(filter.getKey()), "%" + filter.getValue().toString() + "%"));
+                    break;
             }
         });
-        
+
         Predicate[] predicateArray = predicateList.stream().toArray(Predicate[]::new);
-        
+
         cq.where(predicateArray);
-        
+
         cq.select(cb.count(order));
         return em.createQuery(cq).getSingleResult();
     }
 
-    public List<Orders> findAllUserOrders(Users user, int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+    public List<Orders> findAllUserOrders(List<Users> userList, int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Orders> cq = cb.createQuery(Orders.class);
         Root<Orders> order = cq.from(Orders.class);
         CriteriaQuery<Orders> select = cq.select(order);
-        Join<Orders, Users> users = order.join("user");
-        
+        Join<Orders, Users> users = order.join("user", JoinType.LEFT);
+
         if (sortField == null) {
             sortField = ORDER_ID;
         }
@@ -110,13 +118,21 @@ public class OrdersBean {
             cq.orderBy(cb.desc(order.get(sortField)));
         }
         List<Predicate> predicateList = new ArrayList<>();
-        predicateList.add(cb.equal(users, user));
+        
+        predicateList.add(users.in(userList));
+        
         filters.entrySet().forEach((filter) -> {
-            if (filter.getKey().equals("orderStatus") || filter.getKey().equals(ORDER_ID)) {
-                predicateList.add(cb.equal(order.get(filter.getKey()), filter.getValue().toString()));
-            }
-            else {
-                predicateList.add(cb.like(order.get(filter.getKey()), "%" + filter.getValue().toString() + "%"));
+            switch (filter.getKey()) {
+                case "orderStatus":
+                case ORDER_ID:
+                    predicateList.add(cb.equal(order.get(filter.getKey()), filter.getValue().toString()));
+                    break;
+                case "user":
+                    predicateList.add(cb.equal(users.get("userId"), filter.getValue().toString()));
+                    break;
+                default:
+                    predicateList.add(cb.like(order.get(filter.getKey()), "%" + filter.getValue().toString() + "%"));
+                    break;
             }
         });
 

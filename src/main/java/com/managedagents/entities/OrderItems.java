@@ -76,7 +76,7 @@ public class OrderItems implements Serializable
     @JsonIgnore
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     @ManyToOne
-    private Users userId;
+    private Users user;
 
     public OrderItems() {
         this(0, "None", 0.0, 0.0, 0, null);
@@ -147,12 +147,12 @@ public class OrderItems implements Serializable
         this.product = product;
     }
 
-    public Users getUserId() {
-        return userId;
+    public Users getUser() {
+        return user;
     }
 
-    public void setUserId(Users userId) {
-        this.userId = userId;
+    public void setUser(Users user) {
+        this.user = user;
     }
 
     @Override

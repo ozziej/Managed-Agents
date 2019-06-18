@@ -6,13 +6,17 @@
 package com.managedagents.beans;
 
 import com.managedagents.constants.DefaultMessages;
+import com.managedagents.constants.OrderStatus;
+import com.managedagents.constants.UsersStatus;
 import com.managedagents.entities.OrderItems;
 import com.managedagents.entities.Orders;
 import com.managedagents.entities.Products;
 import com.managedagents.entities.Users;
 import com.managedagents.stateless.OrdersBean;
 import com.managedagents.stateless.ProductsBean;
+import com.managedagents.stateless.UsersBean;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -46,11 +50,18 @@ public class OrdersController implements Serializable {
 
     @Inject
     ProductsBean productsBean;
+    
+    @Inject
+    UsersBean usersBean;
 
     private List<Products> productList;
 
     private Users currentUser;
 
+    private Users selectedUser;
+
+    private List<Users> otherUsersList ;
+    
     private Orders selectedOrder;
 
     private OrderItems selectedOrderItem;
@@ -66,6 +77,7 @@ public class OrdersController implements Serializable {
     @PostConstruct
     public void init() {
         currentUser = loginBean.getCurrentUser();
+        findAllUsers();
         getOrdersList();
     }
 
@@ -75,8 +87,8 @@ public class OrdersController implements Serializable {
 
             @Override
             public List<Orders> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
-                List<Orders> orderList = ordersBean.findAllUserOrders(currentUser, first, pageSize, sortField, sortOrder, filters);
-                Long rowCount = ordersBean.countAllUserOrders(currentUser, sortField, sortOrder, filters);
+                List<Orders> orderList = ordersBean.findAllUserOrders(otherUsersList, first, pageSize, sortField, sortOrder, filters);
+                Long rowCount = ordersBean.countAllUserOrders(otherUsersList, sortField, sortOrder, filters);
                 orders.setRowCount(rowCount.intValue());
                 return orderList;
             }
@@ -160,7 +172,7 @@ public class OrdersController implements Serializable {
                 item.setItemQuantity(1);
                 item.setOrder(selectedOrder);
                 item.setProduct(selectedProduct);
-                item.setUserId(currentUser);
+                item.setUser(currentUser);
 
                 orderItemsList.add(item);
                 selectedOrder.setOrderItemsList(orderItemsList);
@@ -214,6 +226,13 @@ public class OrdersController implements Serializable {
     public boolean isOrderSelectable() {
         return orderSelectable;
     }
+    
+    public boolean isOrderEditable(){
+        if (selectedOrder == null){
+            return false;
+        }
+        else return selectedOrder.getStatusType().equals("NEW");
+    }
 
     private boolean editTimeExpired() {
         Calendar currentTime = Calendar.getInstance();
@@ -245,6 +264,24 @@ public class OrdersController implements Serializable {
         }
         context.addMessage(null, new FacesMessage(severity, shortMessage, fullMessage));
     }
+
+    public void findAllUsers() {
+        otherUsersList = new ArrayList<>();
+        if (currentUser.getUserStatus().equals(UsersStatus.ADMIN.toString())) {
+            otherUsersList.addAll(usersBean.findOtherUsers(currentUser));
+        }
+        else {
+            otherUsersList.add(currentUser);
+        }
+    }
+
+    public List<String> getOrderStatusTypes() {
+        List<String> statusList = new ArrayList<>();
+        for (OrderStatus s : OrderStatus.values()){
+            statusList.add(s.toString());
+        }
+        return statusList;
+    }    
 
     public void onFilterEvent(FilterEvent event) {
         selectedOrder = null;
@@ -308,6 +345,22 @@ public class OrdersController implements Serializable {
 
     public void setSelectedProductId(String selectedProductId) {
         this.selectedProductId = selectedProductId;
+    }
+
+    public Users getSelectedUser() {
+        return selectedUser;
+    }
+
+    public void setSelectedUser(Users selectedUser) {
+        this.selectedUser = selectedUser;
+    }
+
+    public List<Users> getOtherUsersList() {
+        return otherUsersList;
+    }
+
+    public void setOtherUsersList(List<Users> otherUsersList) {
+        this.otherUsersList = otherUsersList;
     }
 
 }

@@ -17,9 +17,12 @@
                 <!--<h:outputStylesheet name="css/customised.css" />-->
             </f:facet>
             <h:outputScript library="js" name="extra.js"/>
+            <p:dialog modal="true" widgetVar="statusDialog" id="statusDialog" header="Status" draggable="false" closable="false" resizable="false">
+                <p:graphicImage library="images" name="ajaxloadingbar.gif"/>
+            </p:dialog>
             <p:growl id="growl" life="5000" showDetail="true"/>
             <h:form>
-                <p:menubar>
+                <p:menubar> 
                     <p:menuitem value="User Details" url="mydetails.xhtml"/>
                     <p:menuitem value="Other Users" url="otherusers.xhtml" rendered="#{loginBean.adminUser}"/>
                     <p:menuitem value="Appointments" url="appointments.xhtml"/>

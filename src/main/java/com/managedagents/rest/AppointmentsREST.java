@@ -52,8 +52,6 @@ public class AppointmentsREST {
         if (user != null) {
             Date startDateTime = new Date(startTime);
             Date endDateTime = new Date(endTime);
-            System.out.println("DATE:"+startDateTime.toString());
-            System.out.println("DATE:"+endDateTime.toString());
             return appointmentsBean.findUserAppointmentsByDate(user, startDateTime, endDateTime);
         }
         else {

@@ -5,6 +5,7 @@
  */
 package com.managedagents.stateless;
 
+import com.managedagents.entities.ProductImages;
 import com.managedagents.entities.Products;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,12 @@ public class ProductsBean
     public List<Products> findAllValidProducts()
     {
         TypedQuery<Products> query = em.createNamedQuery("Products.findAll", Products.class);
+        return query.getResultList();
+    }
+    
+    public List<ProductImages> findAllProductImages(Products product){
+        TypedQuery<ProductImages> query = em.createNamedQuery("ProductImages.findByProduct", ProductImages.class);
+        query.setParameter("product", product);
         return query.getResultList();
     }
     
