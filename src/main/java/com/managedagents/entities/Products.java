@@ -5,6 +5,7 @@
  */
 package com.managedagents.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
@@ -77,6 +78,7 @@ public class Products implements Serializable {
     @Column(name = "product_valid_until")
     @Temporal(TemporalType.TIMESTAMP)
     private Date productValidUntil;
+    @JsonManagedReference
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<ProductImages> productImagesList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")

@@ -5,7 +5,7 @@
  */
 package com.managedagents.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -55,7 +55,7 @@ public class ProductImages implements Serializable {
     @Size(min = 1, max = 65535)
     @Column(name = "image_uri")
     private String imageUri;
-    @JsonIgnore
+    @JsonBackReference
     @JoinColumn(name = "product_id", referencedColumnName = "product_id")
     @ManyToOne(optional = false)
     private Products product;
@@ -96,7 +96,7 @@ public class ProductImages implements Serializable {
     }
 
     public Products getProduct() {
-        return product; 
+        return product;
     }
 
     public void setProductId(Products product) {
