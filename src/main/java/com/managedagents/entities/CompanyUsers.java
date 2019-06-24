@@ -5,7 +5,6 @@
  */
 package com.managedagents.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -48,11 +47,9 @@ public class CompanyUsers implements Serializable {
     @NotNull
     @Column(name = "change_settings")
     private short changeSettings;
-    @JsonIgnore
     @JoinColumn(name = "company_id", referencedColumnName = "company_id")
     @ManyToOne(optional = false)
     private Companies company;
-    @JsonIgnore
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     @ManyToOne(optional = false)
     private Users user;

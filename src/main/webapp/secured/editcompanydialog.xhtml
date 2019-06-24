@@ -15,8 +15,8 @@
                 <p:panelGrid columns="4" id="companyPanel" style="border:none;">
                     <p:outputLabel value="Company Name"/>
                     <p:inputText id="companyName" value="#{companiesController.selectedCompany.companyName}"/>
-                    <p:outputLabel value="Vat Number"/>
-                    <p:inputText id="vatNumber" value="#{companiesController.selectedCompany.vatNumber}"/>
+                    <p:outputLabel value="Website Address"/>
+                    <p:inputText id="websiteAddress" value="#{companiesController.selectedCompany.websiteAddress}"/>
                     <p:outputLabel value="Phone Number"/>
                     <p:inputText id="phoneNumber" value="#{companiesController.selectedCompany.phoneNumber}"/>
                     <p:outputLabel value="Cell Number"/>
@@ -25,6 +25,18 @@
                     <p:inputText id="locationLatitude" value="#{companiesController.selectedCompany.locationLatitude}"/>
                     <p:outputLabel value="Longitude"/>
                     <p:inputText id="locationLongitude" value="#{companiesController.selectedCompany.locationLongitude}"/>
+                    <p:outputLabel value="Vat Number"/>
+                    <p:inputText id="vatNumber" value="#{companiesController.selectedCompany.vatNumber}"/>
+                    <p:outputLabel value="Creation Date"/>
+                    <h:outputText value="#{companiesController.selectedCompany.modificationDate}">
+                        <f:convertDateTime pattern="dd MMM yyyy hh:mm"/>
+                    </h:outputText>
+                    <p:outputLabel value="Company Status"/>
+                    <p:selectOneMenu id="companyStatus" value="#{companiesController.selectedCompany.companyStatus}">
+                        <f:selectItems var="status" value="#{companiesController.companyStatusNames}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel/>
+                    <p:outputLabel/>
                     <p:outputLabel value="Physical Address"/>
                     <p:inputTextarea rows="3" cols="20" id="physicalAddress" value="#{companiesController.selectedCompany.physicalAddress}"/>
                     <p:outputLabel value="Postal Address"/>

@@ -1,28 +1,27 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1671\cocoasubrtf500
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;\red251\green0\blue7;}
-{\*\expandedcolortbl;;\cssrgb\c100000\c12195\c0;}
+{\colortbl;\red255\green255\blue255;\red251\green0\blue7;\red251\green0\blue7;}
+{\*\expandedcolortbl;;\cssrgb\c100000\c12195\c0;\cssrgb\c100000\c12195\c0;}
 \paperw11900\paperh16840\margl1440\margr1440\vieww18100\viewh9540\viewkind0
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 
 \f0\fs24 \cf0 Orders (can only edit an order if not invoiced)\
-\cf2 - tap to edit order\
+\cf2 - tap to edit order\cf3 \
 - tap to edit order items (working)\
-- \'93floating\'94 add button to create a new order\
 \cf0 \
 Order items screen \
-\cf2 - deletion of order items works with undo - need a confirmation when deleting (popup)\cf0 \
+\cf3 - deletion of order items works with undo - need a confirmation when deleting (popup)\cf0 \
 - right swipe must edit - popup with products and quantity.\
-\cf2 - save order items\
+\cf3 - save order items\
 - \'93floating\'94 add button to add an order item\
 	- popup a product dialog with quantity.\
 \cf0 \
-Order -> Invoice\
+Order -> Invoice \cf2 (done on website)\cf0 \
 Once order has changed status to \'93INVOICED\'94 it cannot be edited.\
 Email client a copy of the invoice.\
 \
-- Capture location of phone (must be in close proximity to outlet to create an order)\
-- Setup appointments (user must be able to contact the shop - can only place an appointment near the shop)\
+- \cf2 Capture location of phone\cf0  (must be in close proximity to outlet to create an order)\
+- \cf2 Setup appointments\cf0  (user must be able to contact the shop - can only place an appointment near the shop?)\
 	- log file for appointments - already created the table - we\'92ll probably want to do this to keep track of what changed.\
 	-Auto update appointment when near the shop and time is ~ 15 minutes.\
 \
@@ -30,12 +29,12 @@ Email client a copy of the invoice.\
  	- Invoice the shop (perhaps from the order, also might be a partial order)\
 - Ability to place a re-order (repeat orders)\
 \
-- Different access levels\
-	- General user (shop - can view orders, cannot place them)\
+\cf2 - Different access levels\cf0 \
+\cf2 	- General user (shop - can view orders, cannot place them)\
 	- Agent (create appointments, can place orders and generate invoices)\
 		- Need to be in company groups (as a company admin, can view previous company orders etc.)\
 	- Super Admin (can view all details)\
-\
-\cf2 - orders must contain company_id (who is the order for???)\
+\cf0 \
+\cf3 - orders must contain company_id (who is the order for???)\
 	- user_id is user that created the order \
 }

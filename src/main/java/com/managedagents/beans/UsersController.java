@@ -118,11 +118,6 @@ public class UsersController implements Serializable {
 
         if (selectedUser != null) {
 
-            if (companyUsersList == null) {
-                findUserCompanies();
-            }
-
-            selectedUser.setCompanyUsersList(companyUsersList);
             emailAddress = StringUtils.trim(selectedUser.getEmailAddress());
             selectedUser.setEmailAddress(emailAddress);
 

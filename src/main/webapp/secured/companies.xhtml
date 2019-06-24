@@ -31,6 +31,7 @@
                     <p:commandButton id="newCompanyButton" value="New Company" actionListener="#{companiesController.createNewCompany}"
                                      oncomplete="PF('companyEditDialog').show();" update=":companyEditDialog"/>
                     <p:commandButton id="editCompanyButton" value="Edit Company" disabled="#{companiesController.selectedCompany == null}"
+                                     actionListener="#{companiesController.findCompanyUsers}"
                                      oncomplete="PF('companyEditDialog').show();" update=":companyEditDialog"/>
                     <p:commandButton id="editCompanyUsersButton" value="Edit Company Users"  disabled="#{companiesController.selectedCompany == null}"
                                      actionListener="#{companiesController.findCompanyUsers}"

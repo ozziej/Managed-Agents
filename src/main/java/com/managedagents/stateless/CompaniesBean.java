@@ -6,6 +6,7 @@
 package com.managedagents.stateless;
 
 import com.managedagents.entities.Companies;
+import com.managedagents.entities.Users;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,12 @@ public class CompaniesBean {
         TypedQuery<Companies> query = em.createNamedQuery("Companies.findAll", Companies.class);
         return query.getResultList();
     }
+    
+    public List<Companies> findCompaniesByUser(Users user) {
+        TypedQuery<Companies> query = em.createNamedQuery("Companies.findByUser", Companies.class);
+        query.setParameter("user", user);
+        return query.getResultList();
+    }    
 
     public Companies findCompaniesById(Integer companyId) {
         TypedQuery<Companies> query = em.createNamedQuery("Companies.findByCompanyId", Companies.class);
@@ -103,7 +110,7 @@ public class CompaniesBean {
         cq.select(cb.count(company));
         return em.createQuery(cq).getSingleResult();
     }
-
+    
     public Companies addNewCompany(Companies company) {
         em.persist(company);
         em.flush();

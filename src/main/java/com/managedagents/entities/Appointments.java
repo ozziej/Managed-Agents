@@ -5,6 +5,7 @@
  */
 package com.managedagents.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.managedagents.constants.AppointmentStatus;
 import java.io.Serializable;
 import java.util.Calendar;
@@ -75,6 +76,7 @@ public class Appointments implements Serializable {
     @JoinColumn(name = "company_id", referencedColumnName = "company_id")
     @ManyToOne
     private Companies company;
+    @JsonBackReference
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     @ManyToOne
     private Users user;

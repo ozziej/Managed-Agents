@@ -15,6 +15,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -48,6 +49,8 @@ import javax.xml.bind.annotation.XmlTransient;
             @NamedQuery(name = "Companies.findByModificationDate", query = "SELECT c FROM Companies c WHERE c.modificationDate = :modificationDate"),
             @NamedQuery(name = "Companies.findByLocationLatitude", query = "SELECT c FROM Companies c WHERE c.locationLatitude = :locationLatitude"),
             @NamedQuery(name = "Companies.findByLocationLongitude", query = "SELECT c FROM Companies c WHERE c.locationLongitude = :locationLongitude"),
+            @NamedQuery(name = "Companies.findByUser", query = "SELECT c FROM Companies c LEFT OUTER JOIN c.companyUsersList cu "
+                    + "ON cu.company = c WHERE cu.user = :user"),
             @NamedQuery(name = "Companies.findByCompanyStatus", query = "SELECT c FROM Companies c WHERE c.companyStatus = :companyStatus")
 
         })
@@ -125,7 +128,7 @@ public class Companies implements Serializable {
     private List<CompanyGroups> companyGroupsList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentCompanyId")
     private List<CompanyGroups> companyGroupsList1;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "company", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "company", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<CompanyUsers> companyUsersList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "company")
     private Collection<Orders> companyOrdersList;
@@ -134,7 +137,7 @@ public class Companies implements Serializable {
 
     public Companies() {
         this(0, "None", "011", "082", "None", "None", "None", "None", Calendar.getInstance().getTime(),
-                new BigDecimal("0.00"), new BigDecimal("0.00"), "NEW", "None");
+                new BigDecimal("0.00"), new BigDecimal("0.00"), "OPEN", "None");
     }
 
     public Companies(Integer companyId, String companyName, String phoneNumber, String cellNumber, String websiteAddress, String physicalAddress, String postalAddress, String vatNumber, Date modificationDate, BigDecimal locationLatitude, BigDecimal locationLongitude, String companyStatus, String companyLogo) {

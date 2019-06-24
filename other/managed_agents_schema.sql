@@ -31,7 +31,7 @@ CREATE TABLE `companies` (
   `modification_date` datetime NOT NULL DEFAULT '2011-01-01 00:00:00',
   `location_latitude` decimal(10,8) NOT NULL DEFAULT '0.00000000',
   `location_longitude` decimal(11,8) NOT NULL DEFAULT '0.00000000',
-  `company_status` varchar(16) NOT NULL DEFAULT 'NEW',
+  `company_status` varchar(16) NOT NULL DEFAULT 'OPEN',
   `company_logo` text NOT NULL,
   PRIMARY KEY (`company_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

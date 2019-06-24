@@ -5,6 +5,7 @@
  */
 package com.managedagents.beans;
 
+import com.managedagents.constants.CompanyStatus;
 import com.managedagents.constants.DefaultMessages;
 import com.managedagents.entities.Companies;
 import com.managedagents.entities.CompanyUsers;
@@ -47,11 +48,11 @@ public class CompaniesController implements Serializable {
     private Users currentUser;
 
     private LazyDataModel<Companies> companies;
-    
+
     private List<CompanyUsers> companyUsersList;
-    
+
     private List<Companies> companyList;
-    
+
     private Users selectedUser;
 
     @PostConstruct
@@ -142,8 +143,8 @@ public class CompaniesController implements Serializable {
             companyUsersList.addAll(selectedCompany.getCompanyUsersList());
         }
     }
-    
-    public void findAllCompanies(){
+
+    public void findAllCompanies() {
         companyList = new ArrayList<>();
         companyList.addAll(companiesBean.findAllCompanies());
     }
@@ -154,7 +155,7 @@ public class CompaniesController implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         FacesMessage.Severity severity;
         if (selectedCompany != null) {
-            
+
             selectedCompany.setCompanyUsersList(companyUsersList);
             
             if (selectedCompany.getCompanyId().equals(0)) {
@@ -177,8 +178,8 @@ public class CompaniesController implements Serializable {
         }
         context.addMessage(null, new FacesMessage(severity, shortMessage, fullMessage));
     }
-    
-    public void cancelChanges(){
+
+    public void cancelChanges() {
         selectedCompany = null;
         companyUsersList = null;
     }
@@ -245,5 +246,13 @@ public class CompaniesController implements Serializable {
 
     public void setCompanyList(List<Companies> companyList) {
         this.companyList = companyList;
+    }
+
+    public List<String> getCompanyStatusNames() {
+        List<String> statusList = new ArrayList<>();
+        for (CompanyStatus s : CompanyStatus.values()) {
+            statusList.add(s.toString());
+        }
+        return statusList;
     }
 }

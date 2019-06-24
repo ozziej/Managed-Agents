@@ -7,7 +7,6 @@ package com.managedagents.rest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.managedagents.entities.CompanyUsers;
 import com.managedagents.entities.GenericResponse;
 import com.managedagents.entities.Users;
 import com.managedagents.stateless.PasswordManager;
@@ -16,7 +15,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,16 +42,8 @@ public class UsersREST {
 
     @POST
     @Path("/login")
-    @Consumes(
-            {
-                MediaType.APPLICATION_JSON
-            }
-    )
-    @Produces(
-            {
-                MediaType.APPLICATION_JSON
-            }
-    )
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
     public Users login(String jsonString) {
         String emailAddress;
         String userPass;
@@ -106,15 +96,12 @@ public class UsersREST {
         GenericResponse.ResponseCode resultCode;
 
         GenericResponse response;
-        List<CompanyUsers> companyUsers = usersBean.findUserCompanies(user);
-        user.setCompanyUsersList(companyUsers);
-
         if (!user.getUserId().equals(0)) {
             usersBean.editUser(user);
             result = "Success";
             resultCode = GenericResponse.ResponseCode.SUCCESSFUL;
         }
-        else{
+        else {
             result = "Failed";
             resultCode = GenericResponse.ResponseCode.ERROR;
         }
