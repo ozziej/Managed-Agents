@@ -16,7 +16,7 @@
                             <p:column colspan="2" style="text-align: center;">
                                 <p:selectOneMenu id="selectUser" dynamic="true" value="#{appointmentsController.selectedUser}" converter="#{usersConverter}">
                                     <p:ajax update=":appointmentListForm"/>
-                                    <f:selectItem noSelectionOption="true" itemLabel="Select User to View" itemValue="#{null}"/>
+                                    <f:selectItem noSelectionOption="true" itemLabel="All Users" itemValue="#{null}"/>
                                     <f:selectItems var="users" value="#{appointmentsController.otherUsersList}"
                                                    itemValue="#{users.userId.toString()}" itemLabel="#{users.emailAddress}"/>
                                 </p:selectOneMenu>

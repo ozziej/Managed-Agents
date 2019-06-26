@@ -12,7 +12,7 @@
             <ui:define name="content">
                 <h:form id="myDetailsForm">
                     <p:panel header="Basic Details">
-                        <h:outputLabel value="Name :"/><h:outputLabel value="#{loginBean.currentUser.firstName} #{loginBean.currentUser.surname}"/>
+                        <p:outputLabel value="Name :"/><p:outputLabel value="#{loginBean.currentUser.firstName} #{loginBean.currentUser.surname}"/>
                     </p:panel>
                     <p:commandButton id="editSelectedUser" value="Edit Your Details" oncomplete="PF('usersEditDialog').show()"
                                      action="#{usersController.findUserCompanies}"

@@ -5,16 +5,24 @@
  */
 package com.managedagents.beans;
 
+import com.google.maps.GeocodingApi;
+import com.google.maps.GeocodingApiRequest;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.GeocodingResult;
 import com.managedagents.constants.CompanyStatus;
 import com.managedagents.constants.DefaultMessages;
 import com.managedagents.entities.Companies;
 import com.managedagents.entities.CompanyUsers;
 import com.managedagents.entities.Users;
 import com.managedagents.stateless.CompaniesBean;
+import com.managedagents.stateless.MapsSingleton;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -24,8 +32,13 @@ import javax.inject.Named;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.FilterEvent;
 import org.primefaces.event.data.PageEvent;
+import org.primefaces.event.map.MarkerDragEvent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
+import org.primefaces.model.map.DefaultMapModel;
+import org.primefaces.model.map.LatLng;
+import org.primefaces.model.map.MapModel;
+import org.primefaces.model.map.Marker;
 
 /**
  *
@@ -54,6 +67,10 @@ public class CompaniesController implements Serializable {
     private List<Companies> companyList;
 
     private Users selectedUser;
+
+    private MapModel companyMapModel;
+
+    private Marker marker;
 
     @PostConstruct
     public void init() {
@@ -157,7 +174,7 @@ public class CompaniesController implements Serializable {
         if (selectedCompany != null) {
 
             selectedCompany.setCompanyUsersList(companyUsersList);
-            
+
             if (selectedCompany.getCompanyId().equals(0)) {
                 severity = FacesMessage.SEVERITY_INFO;
                 shortMessage = "New Company";
@@ -180,16 +197,19 @@ public class CompaniesController implements Serializable {
     }
 
     public void cancelChanges() {
-        selectedCompany = null;
-        companyUsersList = null;
+        selectedCompany = companiesBean.findCompaniesById(selectedCompany.getCompanyId());
+        updateMapMarker();
+        findCompanyUsers();
     }
 
     public void createNewCompany() {
         selectedCompany = new Companies();
+        updateMapMarker();
     }
 
     public void onRowSelect(SelectEvent event) {
         selectedCompany = (Companies) event.getObject();
+        updateMapMarker();
     }
 
     public void onFilterEvent(FilterEvent event) {
@@ -255,4 +275,63 @@ public class CompaniesController implements Serializable {
         }
         return statusList;
     }
+
+    public boolean isCompanyAdminUser() {
+        if (companyUsersList != null) {
+
+            boolean value = companyUsersList.stream()
+                    .filter(user -> user.getUser().equals(currentUser))
+                    .anyMatch(user -> user.getChangeSettingsBoolean());
+            return value;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public MapModel getCompanyMapModel() {
+        return companyMapModel;
+    }
+
+    public void setCompanyMapModel(MapModel companyMapModel) {
+        this.companyMapModel = companyMapModel;
+    }
+
+    private void updateMapMarker() {
+        if (selectedCompany != null) {
+            LatLng latLng = new LatLng(selectedCompany.getLocationLatitude().doubleValue(), selectedCompany.getLocationLongitude().doubleValue());
+            companyMapModel = new DefaultMapModel();
+            marker = new Marker(latLng, selectedCompany.getCompanyName(), selectedCompany);
+            marker.setDraggable(true);
+            companyMapModel.addOverlay(marker);
+        }
+    }
+
+    public void onMarkerDrag(MarkerDragEvent event) {
+        try {
+            marker = event.getMarker();
+            String address = "None";
+            com.google.maps.model.LatLng latLng = new com.google.maps.model.LatLng(marker.getLatlng().getLat(), marker.getLatlng().getLng());
+
+            GeocodingApiRequest request = GeocodingApi.reverseGeocode(MapsSingleton.getInstance().getContext(), latLng);
+            GeocodingResult[] result = request.await();
+            if (result != null && result.length > 0) {
+                address = result[0].formattedAddress;
+                selectedCompany.setPhysicalAddress(address);
+            }
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Marker Dragged", address));
+        }
+        catch (ApiException | InterruptedException | IOException ex) {
+            Logger.getLogger(CompaniesController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public Marker getMarker() {
+        return marker;
+    }
+
+    public void setMarker(Marker marker) {
+        this.marker = marker;
+    }
+
 }

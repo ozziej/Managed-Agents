@@ -137,7 +137,7 @@ public class Companies implements Serializable {
 
     public Companies() {
         this(0, "None", "011", "082", "None", "None", "None", "None", Calendar.getInstance().getTime(),
-                new BigDecimal("0.00"), new BigDecimal("0.00"), "OPEN", "None");
+                new BigDecimal("-26.20532898"), new BigDecimal("28.04381490"), "OPEN", "None");
     }
 
     public Companies(Integer companyId, String companyName, String phoneNumber, String cellNumber, String websiteAddress, String physicalAddress, String postalAddress, String vatNumber, Date modificationDate, BigDecimal locationLatitude, BigDecimal locationLongitude, String companyStatus, String companyLogo) {

@@ -80,6 +80,14 @@ public class CompanyUsers implements Serializable {
     public void setChangeSettings(short changeSettings) {
         this.changeSettings = changeSettings;
     }
+    
+    public boolean getChangeSettingsBoolean(){
+        return changeSettings == 1;
+    }
+    
+    public void setChangeSettingsBoolean(boolean changeSettingsBoolean){
+        this.changeSettings = changeSettingsBoolean?(short)1:(short)0;
+    }
 
     public Companies getCompany() {
         return company;

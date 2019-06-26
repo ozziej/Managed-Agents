@@ -7,30 +7,36 @@
       xmlns:p="http://primefaces.org/ui">
 
     <ui:composition>
-        <p:dialog id="companyUsersDialog" widgetVar="companyUsersDialog" modal="true" resizable="false" closable="false" width="500px" style="font-size: 12px;">
+        <p:dialog id="companyUsersDialog" widgetVar="companyUsersDialog" modal="true" resizable="false" closable="false" width="65%" style="font-size: 12px;">
             <f:facet name="header">
                 Edit Company Users
             </f:facet>
             <p:panelGrid columns="2" id="companyUsersPanel" style="border:none;">
                 <h:form id="companyUsersForm">
                     <p:panelGrid columns="2" id="usersPanel" style="border:none;width: 100%;">
-                        <p:selectOneMenu id="selectUser" value="#{companiesController.selectedUser}" converter="#{usersConverter}">
+                        <p:selectOneMenu id="selectUser" value="#{companiesController.selectedUser}" converter="#{usersConverter}" disabled="#{!companiesController.companyAdminUser}">
                             <f:selectItem noSelectionOption="true" itemLabel="Select User to Add" itemValue="#{null}"/>
                             <f:selectItems var="users" value="#{usersController.usersList}" itemValue="#{users.userId.toString()}" itemLabel="#{users.emailAddress}"/>
                         </p:selectOneMenu>
-                        <p:commandButton icon="pi pi-user-plus" actionListener="#{companiesController.addUser}" update=":companyUsersForm:companyUsersTable, :growl"/>
+                        <p:commandButton icon="pi pi-user-plus" actionListener="#{companiesController.addUser}" update=":companyUsersForm:companyUsersTable, :growl"
+                                         disabled="#{!companiesController.companyAdminUser}"/>
                     </p:panelGrid>
                     <p:dataTable id="companyUsersTable" widgetVar="userData" var="userData" value="#{companiesController.companyUsersList}">
                         <p:column headerText="Remove" style="text-align: center;">
-                            <p:commandButton icon="pi pi-trash" action="#{companiesController.removeUser}" update=":companyUsersForm:companyUsersTable, :growl" immediate="true">
+                            <p:commandButton icon="pi pi-trash" action="#{companiesController.removeUser}" update=":companyUsersForm:companyUsersTable, :growl" immediate="true"
+                                             disabled="#{!companiesController.companyAdminUser}">
                                 <f:setPropertyActionListener value="#{userData.user}" target="#{companiesController.selectedUser}"/>
                             </p:commandButton>
                         </p:column>
                         <p:column headerText="Email Address" filterBy="#{userData.user.emailAddress}" filterMatchMode="contains">
                             <h:outputText value="#{userData.user.emailAddress}"/>
                         </p:column>
+                        <p:column headerText="Administrator" style="width:20%;text-align: center;">
+                            <p:selectBooleanCheckbox value="#{userData.changeSettingsBoolean}" disabled="#{!companiesController.companyAdminUser}"/>
+                        </p:column>
                     </p:dataTable>
-                    <p:commandButton value="Save" action="#{companiesController.updateCompany}" oncomplete="handleSubmit(args,'companyUsersDialog');" update=":growl"/>
+                    <p:commandButton value="Save" action="#{companiesController.updateCompany}" oncomplete="handleSubmit(args,'companyUsersDialog');" update=":growl"
+                                     rendered="#{companiesController.companyAdminUser}"/>
                     <p:commandButton value="Cancel" onclick="PF('companyUsersDialog').hide();" immediate="true" update=":growl">
                         <p:confirm header="Confirmation" message="Are you sure you wish to cancel all changes ?" icon="pi pi-exclamation-triangle" />
                     </p:commandButton>

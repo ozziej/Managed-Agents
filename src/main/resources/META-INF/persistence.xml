@@ -7,8 +7,8 @@
     <properties>
       <property name="eclipselink.deploy-on-startup" value="true"/>
       <property name="eclipselink.cache.shared.default" value="false"/>
-      <property name="eclipselink.logging.level" value="FINE"/>
-      <property name="eclipselink.logging.level.sql" value="FINE"/>
+      <property name="eclipselink.logging.level" value="OFF"/>
+      <property name="eclipselink.logging.level.sql" value="INFO"/>
       <property name="eclipselink.logging.parameters" value="true"/>
       <property name="eclipselink.weaving" value="static"/>
       <property name="eclipselink.logging.logger" value="DefaultLogger"/>

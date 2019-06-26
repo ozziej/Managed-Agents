@@ -12,39 +12,51 @@
                 Edit company Details
             </f:facet>
             <h:form id="companyEditForm">
-                <p:panelGrid columns="4" id="companyPanel" style="border:none;">
-                    <p:outputLabel value="Company Name"/>
-                    <p:inputText id="companyName" value="#{companiesController.selectedCompany.companyName}"/>
-                    <p:outputLabel value="Website Address"/>
-                    <p:inputText id="websiteAddress" value="#{companiesController.selectedCompany.websiteAddress}"/>
-                    <p:outputLabel value="Phone Number"/>
-                    <p:inputText id="phoneNumber" value="#{companiesController.selectedCompany.phoneNumber}"/>
-                    <p:outputLabel value="Cell Number"/>
-                    <p:inputText id="cellNumber" value="#{companiesController.selectedCompany.cellNumber}"/>
-                    <p:outputLabel value="Latitude"/>
-                    <p:inputText id="locationLatitude" value="#{companiesController.selectedCompany.locationLatitude}"/>
-                    <p:outputLabel value="Longitude"/>
-                    <p:inputText id="locationLongitude" value="#{companiesController.selectedCompany.locationLongitude}"/>
-                    <p:outputLabel value="Vat Number"/>
-                    <p:inputText id="vatNumber" value="#{companiesController.selectedCompany.vatNumber}"/>
-                    <p:outputLabel value="Creation Date"/>
-                    <h:outputText value="#{companiesController.selectedCompany.modificationDate}">
-                        <f:convertDateTime pattern="dd MMM yyyy hh:mm"/>
-                    </h:outputText>
-                    <p:outputLabel value="Company Status"/>
-                    <p:selectOneMenu id="companyStatus" value="#{companiesController.selectedCompany.companyStatus}">
-                        <f:selectItems var="status" value="#{companiesController.companyStatusNames}"/>
-                    </p:selectOneMenu>
-                    <p:outputLabel/>
-                    <p:outputLabel/>
-                    <p:outputLabel value="Physical Address"/>
-                    <p:inputTextarea rows="3" cols="20" id="physicalAddress" value="#{companiesController.selectedCompany.physicalAddress}"/>
-                    <p:outputLabel value="Postal Address"/>
-                    <p:inputTextarea rows="3" cols="20" id="postalAddress" value="#{companiesController.selectedCompany.postalAddress}"/>
-                </p:panelGrid>
+                <p:tabView id="companyTabView">
+                    <p:tab id="generalDetails" title="General Details">
+                        <p:panelGrid columns="4" id="companyPanel" style="border:none;">
+                            <p:outputLabel value="Company Name"/>
+                            <p:inputText id="companyName" value="#{companiesController.selectedCompany.companyName}"/>
+                            <p:outputLabel value="Website Address"/>
+                            <p:inputText id="websiteAddress" value="#{companiesController.selectedCompany.websiteAddress}"/>
+                            <p:outputLabel value="Phone Number"/>
+                            <p:inputText id="phoneNumber" value="#{companiesController.selectedCompany.phoneNumber}"/>
+                            <p:outputLabel value="Cell Number"/>
+                            <p:inputText id="cellNumber" value="#{companiesController.selectedCompany.cellNumber}"/>
+                            <p:outputLabel value="Vat Number"/>
+                            <p:inputText id="vatNumber" value="#{companiesController.selectedCompany.vatNumber}"/>
+                            <p:outputLabel value="Creation Date"/>
+                            <h:outputText value="#{companiesController.selectedCompany.modificationDate}">
+                                <f:convertDateTime pattern="dd MMM yyyy hh:mm"/>
+                            </h:outputText>
+                            <p:outputLabel value="Company Status"/>
+                            <p:selectOneMenu id="companyStatus" value="#{companiesController.selectedCompany.companyStatus}">
+                                <f:selectItems var="status" value="#{companiesController.companyStatusNames}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel/>
+                            <p:outputLabel/>
+                            <p:outputLabel value="Physical Address"/>
+                            <p:inputTextarea rows="3" cols="20" id="physicalAddress" value="#{companiesController.selectedCompany.physicalAddress}"/>
+                            <p:outputLabel value="Postal Address"/>
+                            <p:inputTextarea rows="3" cols="20" id="postalAddress" value="#{companiesController.selectedCompany.postalAddress}"/>
+                            <p:outputLabel value="Latitude"/>
+                            <h:outputText id="locationLatitude" value="#{companiesController.selectedCompany.locationLatitude}"/>
+                            <p:outputLabel value="Longitude"/>
+                            <h:outputText id="locationLongitude" value="#{companiesController.selectedCompany.locationLongitude}"/>
+                        </p:panelGrid>
+                    </p:tab>
+                    <p:tab id="companyMap" title="Physical Address">
+                        <p:gmap id="googleMap" center="#{companiesController.marker.latlng.lat}, #{companiesController.marker.latlng.lng}" type="roadmap" zoom="13"
+                                style="width:600px;height: 400px;" model="#{companiesController.companyMapModel}">
+                            <p:ajax event="markerDrag" listener="#{companiesController.onMarkerDrag}" update="growl, displayAddress, physicalAddress" />
+                        </p:gmap>
+                        <p:outputLabel id="displayAddress" value="#{companiesController.selectedCompany.physicalAddress}"/>                            
+                    </p:tab>
+                </p:tabView>
                 <p:commandButton value="Save" action="#{companiesController.updateCompany}" oncomplete="handleSubmit(args,'companyEditDialog');"
                                  update=":companyListForm:companyDataTable, :growl"/>
-                <p:commandButton value="Cancel" onclick="PF('companyEditDialog').hide();" immediate="true">
+                <p:commandButton value="Cancel" onclick="PF('companyEditDialog').hide();" immediate="true" action="#{companiesController.cancelChanges}"
+                                 update=":companyListForm:companyDataTable, :companyListForm:editCompanyButton, :companyListForm:editCompanyUsersButton">
                     <p:confirm header="Confirmation" message="Are you sure you wish to cancel all changes ?" icon="pi pi-exclamation-triangle" />
                 </p:commandButton>
             </h:form>
