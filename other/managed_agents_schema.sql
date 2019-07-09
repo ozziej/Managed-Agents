@@ -7,7 +7,7 @@ SELECT id, ( 6371 * acos( cos( radians(37) ) * cos( radians( lat ) ) * cos( radi
 
 
 INSERT INTO `users` VALUES (1,'ELG6W7Apqg/wd+0YRySfUWa70p4=','miE/pjqxy74=','Mr.','James','Ostrowick','Lawrence','MALE','james@ostrowick.co.za','South Africa','Johannesburg','None','0115551234','082551234','Just changing other details\nMore detail','1974-10-23','2017-04-26 18:56:04','ENABLED');
-INSERT INTO companies (company_id, company_name, website_address,physical_address, postal_address, company_logo ) values (1,'Main Company', 'https://www.google.com', 'None','None','None');
+INSERT INTO companies (company_id, company_name, website_address,physical_address, postal_address, image_uri ) values (1,'Main Company', 'https://www.google.com', 'None','None','None');
 INSERT INTO company_users values (0,1,1,1,1);
 
 */
@@ -32,7 +32,7 @@ CREATE TABLE `companies` (
   `location_latitude` decimal(10,8) NOT NULL DEFAULT '0.00000000',
   `location_longitude` decimal(11,8) NOT NULL DEFAULT '0.00000000',
   `company_status` varchar(16) NOT NULL DEFAULT 'OPEN',
-  `company_logo` text NOT NULL,
+  `image_uri` text NOT NULL,
   PRIMARY KEY (`company_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

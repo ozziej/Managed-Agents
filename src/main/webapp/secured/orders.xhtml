@@ -55,6 +55,9 @@
                                      update=":editOrderDialog" action="#{ordersController.editExistingOrder}">
                         <f:actionListener binding="#{usersController.findUserCompanies()}"/>
                     </p:commandButton>
+                    <p:commandButton value="Export" ajax="false">
+                        <p:dataExporter type="xls" target=":orderListForm:orderDataTable" fileName="orders"/>
+                    </p:commandButton>
                 </h:form>
                 <ui:include src="editorderdialog.xhtml"/>
             </ui:define>

@@ -10,5 +10,5 @@ package com.managedagents.constants;
  * @author james
  */
 public enum OrderStatus {
-    NEW, CANCELLED, INVOICED
+    NEW, CANCELLED, INVOICED, DELIVERED
 }

@@ -19,7 +19,7 @@
                         <f:selectItems var="companies" value="#{appointmentsController.companyUsersList}"
                                        itemValue="#{companies.company.companyId.toString()}" itemLabel="#{companies.company.companyName}"/>
                     </p:selectOneMenu>
-                    <h:outputLabel for="selecteUser" value="User :"/>
+                    <h:outputLabel for="selectUser" value="User :"/>
                     <p:selectOneMenu id="selectUser" dynamic="true" value="#{appointmentsController.selectedAppointment.user}" converter="#{usersConverter}">
                         <f:selectItem noSelectionOption="true" itemLabel="Select User" itemValue="#{null}"/>
                         <f:selectItems var="users" value="#{appointmentsController.otherUsersList}"

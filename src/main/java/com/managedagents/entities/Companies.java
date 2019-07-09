@@ -122,8 +122,8 @@ public class Companies implements Serializable {
     @NotNull
     @Lob
     @Size(min = 1, max = 65535)
-    @Column(name = "company_logo")
-    private String companyLogo;
+    @Column(name = "image_uri")
+    private String imageUri;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "company")
     private List<CompanyGroups> companyGroupsList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentCompanyId")
@@ -137,10 +137,10 @@ public class Companies implements Serializable {
 
     public Companies() {
         this(0, "None", "011", "082", "None", "None", "None", "None", Calendar.getInstance().getTime(),
-                new BigDecimal("-26.20532898"), new BigDecimal("28.04381490"), "OPEN", "None");
+                new BigDecimal("-26.20532898"), new BigDecimal("28.04381490"), "OPEN", "NONE");
     }
 
-    public Companies(Integer companyId, String companyName, String phoneNumber, String cellNumber, String websiteAddress, String physicalAddress, String postalAddress, String vatNumber, Date modificationDate, BigDecimal locationLatitude, BigDecimal locationLongitude, String companyStatus, String companyLogo) {
+    public Companies(Integer companyId, String companyName, String phoneNumber, String cellNumber, String websiteAddress, String physicalAddress, String postalAddress, String vatNumber, Date modificationDate, BigDecimal locationLatitude, BigDecimal locationLongitude, String companyStatus, String imageUri) {
         this.companyId = companyId;
         this.companyName = companyName;
         this.phoneNumber = phoneNumber;
@@ -153,7 +153,7 @@ public class Companies implements Serializable {
         this.locationLatitude = locationLatitude;
         this.locationLongitude = locationLongitude;
         this.companyStatus = companyStatus;
-        this.companyLogo = companyLogo;
+        this.imageUri = imageUri;
     }
 
     public Integer getCompanyId() {
@@ -252,12 +252,16 @@ public class Companies implements Serializable {
         this.companyStatus = companyStatus;
     }
 
-    public String getCompanyLogo() {
-        return companyLogo;
+    public String getImageUri() {
+        return imageUri;
     }
 
-    public void setCompanyLogo(String companyLogo) {
-        this.companyLogo = companyLogo;
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
+    }
+    
+    public boolean isImageEmpty(){
+        return this.imageUri.equals("NONE");
     }
 
     @XmlTransient

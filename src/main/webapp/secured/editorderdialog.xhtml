@@ -21,17 +21,17 @@
                     </p:selectOneMenu>
                     <h:outputText value="User"/>
                     <p:selectOneMenu id="selectUser" style="width:80%;font-size:12px;" value="#{ordersController.selectedOrder.user}"
-                                     converter="#{usersConverter}" disabled="#{!ordersController.orderEditable}" rendered="#{loginBean.adminUser}">
+                                     converter="#{usersConverter}" disabled="#{!ordersController.orderEditable}" rendered="#{loginBean.currentUser.adminUser}">
                         <f:selectItem itemLabel="Select User" itemValue="#{null}" noSelectionOption="true"/>
                         <f:selectItems var="users" value="#{ordersController.otherUsersList}" itemLabel="#{users.firstName} #{users.surname}"/>
                     </p:selectOneMenu>
-                    <h:outputText value="#{ordersController.selectedOrder.user.firstName} #{ordersController.selectedOrder.user.surname}" rendered="#{!loginBean.adminUser}"/>
+                    <h:outputText value="#{ordersController.selectedOrder.user.firstName} #{ordersController.selectedOrder.user.surname}" rendered="#{!loginBean.currentUser.adminUser}"/>
                     <h:outputText value="Order Date : "/>
                     <h:outputText value="#{ordersController.selectedOrder.orderDate}"/>
                     <h:outputText value="Comments : "/>
-                    <p:inputTextarea cols="30" id="orderComments" value="#{ordersController.selectedOrder.orderComments}" disabled="#{!ordersController.orderEditable}"/>
+                    <p:inputTextarea cols="30" id="orderComments" value="#{ordersController.selectedOrder.orderComments}" disabled="#{!ordersController.orderSaveable}"/>
                     <h:outputText value="Order Status: "/>
-                    <p:selectOneMenu value="#{ordersController.selectedOrder.statusType}" style="width:80%;font-size:12px;" converter="#{orderStatusConverter}" disabled="#{!ordersController.orderEditable}">
+                    <p:selectOneMenu value="#{ordersController.selectedOrder.statusType}" style="width:80%;font-size:12px;" converter="#{orderStatusConverter}" disabled="#{!ordersController.orderSaveable}">
                         <f:selectItem itemLabel="All Status" itemValue="#{null}" noSelectionOption="true"/>
                         <f:selectItems var="status" value="#{ordersController.orderStatusTypes}"/>
                     </p:selectOneMenu>
@@ -57,11 +57,11 @@
                         <h:outputText value="R #{itemData.itemPrice}"/>
                     </p:column>
                     <p:column headerText="Quantity" style="text-align: center;">
-                        <p:inputText value="#{itemData.itemQuantity}" maxlength="5" style="width: 60%;"/>
+                        <p:inputText value="#{itemData.itemQuantity}" maxlength="5" style="width: 60%;" disabled="#{!ordersController.orderEditable}"/>
                     </p:column>
                 </p:dataTable>
                 <p:commandButton value="Save" action="#{ordersController.updateOrder}" oncomplete="handleSubmit(args, 'editOrderDialog');"
-                                 update=":growl,:orderListForm" disabled="#{!ordersController.orderEditable}"/>
+                                 update=":growl,:orderListForm" disabled="#{!ordersController.orderSaveable}"/>
                 <p:commandButton value="Cancel" onclick="PF('editOrderDialog').hide()" immediate="true" action="#{ordersController.cancelChanges}"
                                  update=":growl,:orderListForm">
                     <p:confirm header="Confirmation" message="Are you sure you wish to cancel all changes ?" icon="pi pi-exclamation-triangle" />

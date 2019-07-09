@@ -117,7 +117,8 @@ public class UsersController implements Serializable {
         FacesMessage.Severity severity;
 
         if (selectedUser != null) {
-
+            selectedUser.setCompanyUsersList(companyUsersList);
+            
             emailAddress = StringUtils.trim(selectedUser.getEmailAddress());
             selectedUser.setEmailAddress(emailAddress);
 

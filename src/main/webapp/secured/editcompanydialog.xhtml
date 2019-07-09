@@ -52,6 +52,21 @@
                         </p:gmap>
                         <p:outputLabel id="displayAddress" value="#{companiesController.selectedCompany.physicalAddress}"/>                            
                     </p:tab>
+                    <p:tab id="images" title="Images">
+                        <p:panel id="imagePanel" header="File" style="text-align: center;">
+                            <h:panelGrid id="companyImage" columns="1" style="width: 100%;text-align: center;" rendered="#{!companiesController.selectedCompany.imageEmpty}">
+                                <p:graphicImage value="/ImageServlet/companies/#{companiesController.selectedCompany.companyId}/#{companiesController.selectedCompany.imageUri}.jpg" style="max-height: 80px;max-width: 120px;"/>
+                                <p:commandButton value="Delete" icon="pi pi-trash" update="growl,imagePanel" action="#{companiesController.deleteImage}">
+                                    <p:confirm header="Confirmation" message="Are you sure you wish to remove this?" icon="pi pi-exclamation-triangle" />
+                                </p:commandButton>
+                                <p:commandButton value="Download" icon="pi pi-cloud-download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+                                    <p:fileDownload value="#{companiesController.downloadFile}"/>
+                                </p:commandButton>
+                            </h:panelGrid>
+                        </p:panel>
+                        <p:fileUpload id="fileUpload" mode="advanced" fileUploadListener="#{companiesController.handleUploadFile}" update="growl,imagePanel"
+                                      disabled="#{companiesController.selectedCompany.companyId == 0}"/>
+                    </p:tab>
                 </p:tabView>
                 <p:commandButton value="Save" action="#{companiesController.updateCompany}" oncomplete="handleSubmit(args,'companyEditDialog');"
                                  update=":companyListForm:companyDataTable, :growl"/>

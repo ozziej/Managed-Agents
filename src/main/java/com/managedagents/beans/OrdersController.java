@@ -50,7 +50,7 @@ public class OrdersController implements Serializable {
 
     @Inject
     ProductsBean productsBean;
-    
+
     @Inject
     UsersBean usersBean;
 
@@ -60,8 +60,8 @@ public class OrdersController implements Serializable {
 
     private Users selectedUser;
 
-    private List<Users> otherUsersList ;
-    
+    private List<Users> otherUsersList;
+
     private Orders selectedOrder;
 
     private OrderItems selectedOrderItem;
@@ -226,12 +226,23 @@ public class OrdersController implements Serializable {
     public boolean isOrderSelectable() {
         return orderSelectable;
     }
-    
-    public boolean isOrderEditable(){
-        if (selectedOrder == null){
+
+    public boolean isOrderEditable() {
+        if (selectedOrder == null) {
             return false;
         }
-        else return selectedOrder.getStatusType().equals("NEW");
+        else {
+            return selectedOrder.getStatusType().equals("NEW");
+        }
+    }
+
+    public boolean isOrderSaveable() {
+        if (selectedOrder == null) {
+            return false;
+        }
+        else {
+            return !selectedOrder.getStatusType().equals("CANCELLED");
+        }
     }
 
     private boolean editTimeExpired() {
@@ -277,11 +288,11 @@ public class OrdersController implements Serializable {
 
     public List<String> getOrderStatusTypes() {
         List<String> statusList = new ArrayList<>();
-        for (OrderStatus s : OrderStatus.values()){
+        for (OrderStatus s : OrderStatus.values()) {
             statusList.add(s.toString());
         }
         return statusList;
-    }    
+    }
 
     public void onFilterEvent(FilterEvent event) {
         selectedOrder = null;

@@ -46,7 +46,7 @@
                         <f:convertDateTime pattern="dd MMM yyyy hh:mm"/>
                     </h:outputText>
                     <p:outputLabel value="User Status"/>
-                    <p:selectOneMenu value="#{usersController.selectedUser.userStatus}" disabled="#{!loginBean.adminUser}">
+                    <p:selectOneMenu value="#{usersController.selectedUser.userStatus}" disabled="#{!loginBean.currentUser.adminUser}">
                         <f:selectItems var="status" value="#{usersController.userStatusTypes}"/>
                     </p:selectOneMenu>
                     <p:outputLabel value="Postal Address"/>

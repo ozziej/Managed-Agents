@@ -5,6 +5,7 @@
  */
 package com.managedagents.entities;
 
+import com.managedagents.constants.UsersStatus;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Collection;
@@ -291,6 +292,14 @@ public class Users implements Serializable {
 
     public void setUserStatus(String userStatus) {
         this.userStatus = userStatus;
+    }
+    
+    public boolean isAdminUser(){
+        return this.userStatus.equals(UsersStatus.ADMIN.toString());
+    }
+    
+    public boolean isSalesUser(){
+        return this.userStatus.equals(UsersStatus.USER.toString());
     }
 
     @XmlTransient

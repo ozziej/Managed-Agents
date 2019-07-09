@@ -83,7 +83,7 @@ public class CompaniesREST {
         if (companies.getCompanyId().equals(0)) {
             companies = companiesBean.addNewCompany(companies);
             List<CompanyUsers> updatedList = new ArrayList<>();
-            for (CompanyUsers cu : companyUsers){
+            for (CompanyUsers cu : companyUsers) {
                 updatedList.add(new CompanyUsers(companies, cu.getUser(), cu.getChangeSettings()));
             }
             companies.setCompanyUsersList(updatedList);

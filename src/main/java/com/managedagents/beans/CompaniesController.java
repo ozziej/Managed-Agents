@@ -11,16 +11,26 @@ import com.google.maps.errors.ApiException;
 import com.google.maps.model.GeocodingResult;
 import com.managedagents.constants.CompanyStatus;
 import com.managedagents.constants.DefaultMessages;
+import static com.managedagents.constants.DefaultProperties.BASE_DIRECTORY;
+import com.managedagents.converters.ImageConverter;
 import com.managedagents.entities.Companies;
 import com.managedagents.entities.CompanyUsers;
 import com.managedagents.entities.Users;
 import com.managedagents.stateless.CompaniesBean;
 import com.managedagents.stateless.MapsSingleton;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -29,12 +39,16 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.FilterEvent;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.event.map.MarkerDragEvent;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
@@ -82,8 +96,8 @@ public class CompaniesController implements Serializable {
         companies = new LazyDataModel<Companies>() {
             @Override
             public List<Companies> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
-                List<Companies> companyList = companiesBean.findAllCompanies(first, pageSize, sortField, sortOrder, filters);
-                Long rowCount = companiesBean.countAllCompanies(sortField, sortOrder, filters);
+                List<Companies> companyList = companiesBean.findAllCompanies(currentUser, first, pageSize, sortField, sortOrder, filters);
+                Long rowCount = companiesBean.countAllCompanies(currentUser, sortField, sortOrder, filters);
                 companies.setRowCount(rowCount.intValue());
                 return companyList;
             }
@@ -196,6 +210,91 @@ public class CompaniesController implements Serializable {
         context.addMessage(null, new FacesMessage(severity, shortMessage, fullMessage));
     }
 
+    public void handleUploadFile(FileUploadEvent event) {
+        String shortMessage;
+        String fullMessage;
+        FacesContext context = FacesContext.getCurrentInstance();
+        FacesMessage.Severity severity;
+        UploadedFile uploadedFile = event.getFile();
+        String subDirectory;
+        String fileName = UUID.randomUUID().toString().replaceAll("-", "");
+        if (selectedCompany != null) {
+            subDirectory = selectedCompany.getCompanyId().toString();
+            String previousFile = selectedCompany.getImageUri();
+            Path destination = Paths.get(BASE_DIRECTORY + "/companies/" + subDirectory + "/" + fileName + ".jpg");
+
+            try {
+                if (previousFile != null && !previousFile.isEmpty() && !selectedCompany.isImageEmpty()) {
+                    Path previousDestination = Paths.get(BASE_DIRECTORY + "/companies/" + subDirectory + "/" + previousFile + ".jpg");
+                    if (Files.exists(previousDestination)) {
+                        Files.delete(previousDestination);
+                    }
+                }
+                Files.createDirectories(Paths.get((BASE_DIRECTORY + "/companies/" + subDirectory)));
+                Path scaledImage = ImageConverter.scaleImage(uploadedFile, 600).toPath();
+                Files.move(scaledImage, destination, REPLACE_EXISTING);
+                severity = FacesMessage.SEVERITY_INFO;
+                shortMessage = "Added.";
+                fullMessage = "New File Uploaded.";
+
+                selectedCompany.setImageUri(fileName);
+                companiesBean.editCompany(selectedCompany);
+            }
+            catch (IOException ex) {
+                shortMessage = DefaultMessages.DEFAULT_ERROR;
+                severity = FacesMessage.SEVERITY_ERROR;
+                Logger.getLogger(CompaniesController.class.getName()).log(Level.SEVERE, null, ex);
+                fullMessage = "Failed :" + ex.toString();
+            }
+        }
+        else {
+            shortMessage = DefaultMessages.DEFAULT_ERROR;
+            fullMessage = "Nothing Selected";
+            severity = FacesMessage.SEVERITY_ERROR;
+        }
+        context.addMessage(null, new FacesMessage(severity, shortMessage, fullMessage));
+    }
+
+    public void deleteImage() {
+        String shortMessage;
+        String fullMessage;
+        FacesContext context = FacesContext.getCurrentInstance();
+        FacesMessage.Severity severity;
+
+        String subDirectory = selectedCompany.getCompanyId().toString();
+        String fileName = selectedCompany.getImageUri();
+        Path destination = Paths.get(BASE_DIRECTORY + "/companies/" + subDirectory + "/" + fileName + ".jpg");
+        try {
+            Files.delete(destination);
+            severity = FacesMessage.SEVERITY_INFO;
+            shortMessage = "Deleted";
+            fullMessage = selectedCompany.getCompanyName() + " had a file deleted.";
+
+            selectedCompany.setImageUri("NONE");
+            companiesBean.editCompany(selectedCompany);
+        }
+        catch (IOException ex) {
+            shortMessage = DefaultMessages.DEFAULT_ERROR;
+            severity = FacesMessage.SEVERITY_ERROR;
+            fullMessage = "Failed :" + ex.getLocalizedMessage();
+        }
+        context.addMessage(null, new FacesMessage(severity, shortMessage, fullMessage));
+    }
+
+    public StreamedContent getDownloadFile() {
+        String subDirectory = selectedCompany.getCompanyId().toString();
+        String fileName = selectedCompany.getImageUri();
+        Path destination = Paths.get(BASE_DIRECTORY + "/companies/" + subDirectory + "/" + fileName + ".jpg");
+        InputStream stream = null;
+        try {
+            stream = new FileInputStream(destination.toFile());
+        }
+        catch (FileNotFoundException ex) {
+            Logger.getLogger(CompaniesController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return new DefaultStreamedContent(stream, "application/octet-stream", fileName + ".jpg");
+    }
+
     public void cancelChanges() {
         selectedCompany = companiesBean.findCompaniesById(selectedCompany.getCompanyId());
         updateMapMarker();
@@ -213,11 +312,11 @@ public class CompaniesController implements Serializable {
     }
 
     public void onFilterEvent(FilterEvent event) {
-        cancelChanges();
+        selectedCompany = null;
     }
 
     public void onPaginationEvent(PageEvent event) {
-        cancelChanges();
+        selectedCompany = null;
     }
 
     public Companies getSelectedCompany() {
@@ -274,19 +373,6 @@ public class CompaniesController implements Serializable {
             statusList.add(s.toString());
         }
         return statusList;
-    }
-
-    public boolean isCompanyAdminUser() {
-        if (companyUsersList != null) {
-
-            boolean value = companyUsersList.stream()
-                    .filter(user -> user.getUser().equals(currentUser))
-                    .anyMatch(user -> user.getChangeSettingsBoolean());
-            return value;
-        }
-        else {
-            return false;
-        }
     }
 
     public MapModel getCompanyMapModel() {

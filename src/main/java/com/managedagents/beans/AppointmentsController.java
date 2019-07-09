@@ -112,6 +112,9 @@ public class AppointmentsController implements Serializable {
                     appointmentsList = appointmentsBean.findAllUserAppointmentsByDate(selectedUser, start, end);
                 }
                 else{
+                    if (selectedUser == null){
+                        selectedUser = currentUser;
+                    }
                     appointmentsList = appointmentsBean.findUserAppointmentsByDate(selectedUser, start, end);
                 }
                 appointmentsList.forEach(a -> {

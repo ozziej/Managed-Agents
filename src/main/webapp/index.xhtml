@@ -14,6 +14,7 @@
         <h:form id="loginForm">
             <p:panel header="Login" style="text-align: center;">
                 <p:messages id="messages" showDetail="true"/>
+                <p:growl id="growl" life="5000" showDetail="true"/>
                 <p:panelGrid id="grid" style="margin-left:30%;width:50%;">
                     <p:row>
                         <p:column style="text-align: left;">
@@ -35,7 +36,7 @@
                         </p:column>
                     </p:row>
                 </p:panelGrid>
-                <p:commandButton style="text-align: center;" value="Login" update="grid" action="#{loginBean.loginUser}"/>
+                <p:commandButton style="text-align: center;" value="Login" update="grid, growl" action="#{loginBean.loginUser}"/>
             </p:panel>
         </h:form>
     </h:body>

@@ -6,6 +6,7 @@
 package com.managedagents.stateless;
 
 import com.managedagents.entities.Companies;
+import com.managedagents.entities.CompanyUsers;
 import com.managedagents.entities.Users;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.primefaces.model.SortOrder;
@@ -55,25 +57,30 @@ public class CompaniesBean {
         }
     }
 
-    public List<Companies> findAllCompanies(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+    public List<Companies> findAllCompanies(Users user, int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Companies> cq = cb.createQuery(Companies.class);
 
         Root<Companies> company = cq.from(Companies.class);
+        Join<Companies, CompanyUsers> companyUsers = company.join("companyUsersList");
+        Join<CompanyUsers, Users> users = companyUsers.join("user");
+        
         CriteriaQuery<Companies> select = cq.select(company);
         if (sortField == null) {
             sortField = COMPANY_ID;
         }
         if (sortOrder.equals(SortOrder.ASCENDING)) {
             cq.orderBy(cb.asc(company.get(sortField)));
-        }
+        }   
         else if (sortOrder.equals(SortOrder.DESCENDING)) {
             cq.orderBy(cb.desc(company.get(sortField)));
         }
         List<Predicate> predicateList = new ArrayList<>();
-        for (Map.Entry<String, Object> filter : filters.entrySet()) {
+        predicateList.add(cb.equal(users, user));
+        
+        filters.entrySet().forEach((filter) -> {
             predicateList.add(cb.like(company.get(filter.getKey()), "%" + filter.getValue().toString() + "%"));
-        }
+        });
         Predicate[] predicateArray = predicateList.stream().toArray(Predicate[]::new);
         cq.where(predicateArray);
         TypedQuery<Companies> typedQuery = em.createQuery(select);
@@ -87,11 +94,14 @@ public class CompaniesBean {
         return typedQuery.getResultList();
     }
 
-    public Long countAllCompanies(String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+    public Long countAllCompanies(Users user, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 
         Root<Companies> company = cq.from(Companies.class);
+        Join<Companies, CompanyUsers> companyUsers = company.join("companyUsersList");
+        Join<CompanyUsers, Users> users = companyUsers.join("user");
+        
         if (sortField == null) {
             sortField = COMPANY_ID;
         }
@@ -102,6 +112,7 @@ public class CompaniesBean {
             cq.orderBy(cb.desc(company.get(sortField)));
         }
         List<Predicate> predicateList = new ArrayList<>();
+        predicateList.add(cb.equal(users, user));
         filters.entrySet().forEach((filter) -> {
             predicateList.add(cb.like(company.get(filter.getKey()), "%" + filter.getValue().toString() + "%"));
         });
