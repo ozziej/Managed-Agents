@@ -28,5 +28,6 @@ Any value defined here will override the pom.xml file value but is only applicab
         <netbeans.compile.on.save>all</netbeans.compile.on.save>
         <org-netbeans-modules-maven-jaxws.test_2e_client_2e_project>/Users/james/NetBeansProjects/ManagedAgents</org-netbeans-modules-maven-jaxws.test_2e_client_2e_project>
         <netbeans.hint.jdkPlatform>JDK_1.8</netbeans.hint.jdkPlatform>
+        <org-netbeans-modules-javascript2-requirejs.enabled>true</org-netbeans-modules-javascript2-requirejs.enabled>
     </properties>
 </project-shared-configuration>

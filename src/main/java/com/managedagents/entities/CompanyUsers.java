@@ -19,6 +19,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -81,10 +82,12 @@ public class CompanyUsers implements Serializable {
         this.changeSettings = changeSettings;
     }
     
+    @XmlTransient
     public boolean getChangeSettingsBoolean(){
         return changeSettings == 1;
     }
     
+    @XmlTransient
     public void setChangeSettingsBoolean(boolean changeSettingsBoolean){
         this.changeSettings = changeSettingsBoolean?(short)1:(short)0;
     }

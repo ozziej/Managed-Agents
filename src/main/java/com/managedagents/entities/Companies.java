@@ -124,16 +124,8 @@ public class Companies implements Serializable {
     @Size(min = 1, max = 65535)
     @Column(name = "image_uri")
     private String imageUri;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "company")
-    private List<CompanyGroups> companyGroupsList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentCompanyId")
-    private List<CompanyGroups> companyGroupsList1;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "company", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<CompanyUsers> companyUsersList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "company")
-    private Collection<Orders> companyOrdersList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "company")
-    private Collection<Appointments> appointmentsCollection;
 
     public Companies() {
         this(0, "None", "011", "082", "None", "None", "None", "None", Calendar.getInstance().getTime(),
@@ -260,26 +252,9 @@ public class Companies implements Serializable {
         this.imageUri = imageUri;
     }
     
+    @XmlTransient
     public boolean isImageEmpty(){
         return this.imageUri.equals("NONE");
-    }
-
-    @XmlTransient
-    public List<CompanyGroups> getCompanyGroupsList() {
-        return companyGroupsList;
-    }
-
-    public void setCompanyGroupsList(List<CompanyGroups> companyGroupsList) {
-        this.companyGroupsList = companyGroupsList;
-    }
-
-    @XmlTransient
-    public List<CompanyGroups> getCompanyGroupsList1() {
-        return companyGroupsList1;
-    }
-
-    public void setCompanyGroupsList1(List<CompanyGroups> companyGroupsList1) {
-        this.companyGroupsList1 = companyGroupsList1;
     }
 
     @XmlTransient
@@ -290,25 +265,7 @@ public class Companies implements Serializable {
     public void setCompanyUsersList(List<CompanyUsers> companyUsersList) {
         this.companyUsersList = companyUsersList;
     }
-    
-    @XmlTransient
-    public Collection<Orders> getCompanyOrdersList() {
-        return companyOrdersList;
-    }
-
-    public void setCompanyOrdersList(Collection<Orders> companyOrdersList) {
-        this.companyOrdersList = companyOrdersList;
-    }
-
-    @XmlTransient
-    public Collection<Appointments> getAppointmentsCollection() {
-        return appointmentsCollection;
-    }
-
-    public void setAppointmentsCollection(Collection<Appointments> appointmentsCollection) {
-        this.appointmentsCollection = appointmentsCollection;
-    }
-
+   
     @Override
     public int hashCode() {
         int hash = 0;

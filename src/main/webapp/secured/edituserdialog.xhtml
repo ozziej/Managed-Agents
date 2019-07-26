@@ -26,6 +26,7 @@
                     <p:selectOneMenu id="gender" value="#{usersController.selectedUser.gender}">
                         <f:selectItem itemValue="MALE" itemLabel="Male"/>
                         <f:selectItem itemValue="FEMALE" itemLabel="Female"/>
+                        <f:selectItem itemValue="OTHER" itemLabel="Other"/>
                     </p:selectOneMenu>
                     <p:outputLabel value="First Name"/>
                     <p:inputText value="#{usersController.selectedUser.firstName}"/>

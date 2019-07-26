@@ -135,8 +135,6 @@ public class Users implements Serializable {
     private Collection<Orders> ordersList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
     private Collection<CompanyUsers> companyUsersList;
-    @OneToMany(mappedBy = "user")
-    private Collection<OrderItems> orderItemsList;
 
     public Users() {
         this.userId = 0;
@@ -294,10 +292,12 @@ public class Users implements Serializable {
         this.userStatus = userStatus;
     }
     
+    @XmlTransient
     public boolean isAdminUser(){
         return this.userStatus.equals(UsersStatus.ADMIN.toString());
     }
     
+    @XmlTransient
     public boolean isSalesUser(){
         return this.userStatus.equals(UsersStatus.USER.toString());
     }
@@ -318,15 +318,6 @@ public class Users implements Serializable {
 
     public void setCompanyUsersList(Collection<CompanyUsers> companyUsersList) {
         this.companyUsersList = companyUsersList;
-    }
-
-    @XmlTransient
-    public Collection<OrderItems> getOrderItemsList() {
-        return orderItemsList;
-    }
-
-    public void setOrderItemsList(Collection<OrderItems> orderItemsList) {
-        this.orderItemsList = orderItemsList;
     }
 
     @Override

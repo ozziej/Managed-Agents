@@ -10,13 +10,21 @@ import java.util.List;
 public class CompanyUsersRequest {
     private List<CompanyUsers> companyUsers;
     private Companies companies;
+    private Users users;
 
     public CompanyUsersRequest() {
+    }
+
+    public CompanyUsersRequest(List<CompanyUsers> companyUsers, Users users) {
+        this.companyUsers = companyUsers;
+        this.companies = null;
+        this.users = users;
     }
 
     public CompanyUsersRequest(List<CompanyUsers> companyUsers, Companies companies) {
         this.companyUsers = companyUsers;
         this.companies = companies;
+        this.users = null;
     }
 
     public List<CompanyUsers> getCompanyUsers() {
@@ -33,5 +41,13 @@ public class CompanyUsersRequest {
 
     public void setCompanies(Companies companies) {
         this.companies = companies;
+    }
+
+    public Users getUsers() {
+        return users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
     }
 }
