@@ -66,34 +66,34 @@ public class ProductsBean
     public Long countAllProducts(String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-        Root<Products> user = cq.from(Products.class);
+        Root<Products> product = cq.from(Products.class);
 
         if (sortField == null) {
             sortField = PRODUCT_ID;
         }
 
         if (sortOrder.equals(SortOrder.ASCENDING)) {
-            cq.orderBy(cb.asc(user.get(sortField)));
+            cq.orderBy(cb.asc(product.get(sortField)));
         }
         else if (sortOrder.equals(SortOrder.DESCENDING)) {
-            cq.orderBy(cb.desc(user.get(sortField)));
+            cq.orderBy(cb.desc(product.get(sortField)));
         }
 
         List<Predicate> predicateList = new ArrayList<>();
 
         filters.entrySet().forEach((filter) -> {
-            if (filter.getKey().equals("userStatus") || filter.getKey().equals(PRODUCT_ID)) {
-                predicateList.add(cb.equal(user.get(filter.getKey()), filter.getValue().toString()));
+            if (filter.getKey().equals(PRODUCT_ID)) {
+                predicateList.add(cb.equal(product.get(filter.getKey()), filter.getValue().toString()));
             }
             else {
-                predicateList.add(cb.like(user.get(filter.getKey()), "%" + filter.getValue().toString() + "%"));
+                predicateList.add(cb.like(product.get(filter.getKey()), "%" + filter.getValue().toString() + "%"));
             }
         });
 
         Predicate[] predicateArray = predicateList.stream().toArray(Predicate[]::new);
 
         cq.where(predicateArray);
-        cq.select(cb.count(user));
+        cq.select(cb.count(product));
         return em.createQuery(cq).getSingleResult();
     }
 
@@ -101,28 +101,28 @@ public class ProductsBean
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Products> cq = cb.createQuery(Products.class);
 
-        Root<Products> user = cq.from(Products.class);
-        CriteriaQuery<Products> select = cq.select(user);
+        Root<Products> product = cq.from(Products.class);
+        CriteriaQuery<Products> select = cq.select(product);
 
         if (sortField == null) {
             sortField = PRODUCT_ID;
         }
 
         if (sortOrder.equals(SortOrder.ASCENDING)) {
-            cq.orderBy(cb.asc(user.get(sortField)));
+            cq.orderBy(cb.asc(product.get(sortField)));
         }
         else if (sortOrder.equals(SortOrder.DESCENDING)) {
-            cq.orderBy(cb.desc(user.get(sortField)));
+            cq.orderBy(cb.desc(product.get(sortField)));
         }
 
         List<Predicate> predicateList = new ArrayList<>();
 
         filters.entrySet().forEach((filter) -> {
-            if (filter.getKey().equals("userStatus") || filter.getKey().equals(PRODUCT_ID)) {
-                predicateList.add(cb.equal(user.get(filter.getKey()), filter.getValue().toString()));
+            if (filter.getKey().equals(PRODUCT_ID)) {
+                predicateList.add(cb.equal(product.get(filter.getKey()), filter.getValue().toString()));
             }
             else {
-                predicateList.add(cb.like(user.get(filter.getKey()), "%" + filter.getValue().toString() + "%"));
+                predicateList.add(cb.like(product.get(filter.getKey()), "%" + filter.getValue().toString() + "%"));
             }
         });
 

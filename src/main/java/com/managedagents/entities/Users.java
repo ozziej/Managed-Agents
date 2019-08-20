@@ -132,8 +132,6 @@ public class Users implements Serializable {
     @Column(name = "user_status")
     private String userStatus;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
-    private Collection<Orders> ordersList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
     private Collection<CompanyUsers> companyUsersList;
 
     public Users() {
@@ -300,15 +298,6 @@ public class Users implements Serializable {
     @XmlTransient
     public boolean isSalesUser(){
         return this.userStatus.equals(UsersStatus.USER.toString());
-    }
-
-    @XmlTransient
-    public Collection<Orders> getOrdersList() {
-        return ordersList;
-    }
-
-    public void setOrdersList(Collection<Orders> ordersList) {
-        this.ordersList = ordersList;
     }
 
     @XmlTransient
