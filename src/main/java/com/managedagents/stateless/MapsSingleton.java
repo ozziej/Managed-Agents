@@ -18,7 +18,7 @@ public final class MapsSingleton {
 
     private MapsSingleton() {
         context = new GeoApiContext.Builder()
-                .apiKey("AIzaSyCNh3BBlVol_qCg0udD60Hl0ksRMv9Gb7s")
+                .apiKey("XXXXXXXXXX")
                 .build();
     }
 
